@@ -1,9 +1,11 @@
-mport { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card.jsx'
-import { Button } from '@/components/ui/button.jsx'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
+'use client';
+
+import { useState } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Heart, 
   MessageCircle, 
@@ -16,7 +18,7 @@ import {
 export function NotificationsPage({ notifications: initialNotifications }) {
   const [notifications, setNotifications] = useState(initialNotifications)
 
-  const getIcon = (type) => {
+  const getIcon = (type: any) => {
     switch (type) {
       case 'like':
         return <Heart className="w-5 h-5 text-red-500" />
@@ -33,9 +35,9 @@ export function NotificationsPage({ notifications: initialNotifications }) {
     }
   }
 
-  const markAsRead = (id) => {
-    setNotifications(prev =>
-      prev.map(notif =>
+  const markAsRead = (id: any) => {
+    setNotifications((prev: any) =>
+      prev.map((notif: any) =>
         notif.id === id ? { ...notif, read: true } : notif
       )
     )

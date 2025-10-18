@@ -1,8 +1,10 @@
+'use client';
+
 import { useState, useEffect } from 'react'
-import { Input } from '@/components/ui/input.jsx'
-import { Card, CardContent } from '@/components/ui/card.jsx'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
 import { Search, X } from 'lucide-react'
-import { Button } from '@/components/ui/button.jsx'
+import { Button } from '@/components/ui/button'
 
 export function SearchBar({ placeholder = "Search...", onSearch, data = [] }) {
   const [query, setQuery] = useState('')

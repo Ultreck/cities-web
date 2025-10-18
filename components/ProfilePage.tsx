@@ -1,12 +1,14 @@
+'use client';
+
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
-import { Button } from '@/components/ui/button.jsx'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import { Input } from '@/components/ui/input.jsx'
-import { Textarea } from '@/components/ui/textarea.jsx'
-import { Label } from '@/components/ui/label.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import { 
   MapPin, 
   Calendar, 
@@ -19,7 +21,7 @@ import {
   DollarSign,
   UserPlus
 } from 'lucide-react'
-import { PostCard } from '../features/PostCard.jsx'
+import { PostCard } from './PostCard';
 
 export function ProfilePage({ user, posts = [] }) {
   const [isEditing, setIsEditing] = useState(false)

@@ -1,17 +1,18 @@
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
-import { Button } from '@/components/ui/button.jsx'
-import { Input } from '@/components/ui/input.jsx'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
-import { ScrollArea } from '@/components/ui/scroll-area.jsx'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { 
   Search, 
   Send, 
   MoreVertical,
   Phone,
   Video,
-  Info
+  Info,
+  MessageCircle
 } from 'lucide-react'
 
 export function MessagesPage({ messages: initialMessages }) {
@@ -167,7 +168,7 @@ export function MessagesPage({ messages: initialMessages }) {
               {/* Messages */}
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-4">
-                  {selectedChat.messages.map(message => (
+                  {selectedChat?.messages.map(message => (
                     <div
                       key={message.id}
                       className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
