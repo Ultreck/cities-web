@@ -1,8 +1,11 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import img from "../../assets/images/image 2.png"
 
 export default function BusinessRegistration() {
   const router = useRouter();
@@ -41,15 +44,15 @@ export default function BusinessRegistration() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="max-h-screen bg-white flex">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 items-center justify-center p-12">
-        <div className="text-center text-white">
-          <div className="bg-white/20 rounded-3xl p-12 backdrop-blur-sm">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 items-center justify-center">
+        <div className="text-center h-full w-full text-white">
+          <div className="w-full h-full">
             <img
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=600&fit=crop"
+              src={img.src}
               alt="Business meeting"
-              className="rounded-2xl w-full h-96 object-cover shadow-2xl"
+              className="w-full h-full object-cover shadow-2xl"
             />
           </div>
         </div>
@@ -74,7 +77,7 @@ export default function BusinessRegistration() {
             <p className="text-gray-600">
               Do you already have an account?{" "}
               <button
-                onClick={() => router.back()}
+                onClick={() => router.push("/login")}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Sign in

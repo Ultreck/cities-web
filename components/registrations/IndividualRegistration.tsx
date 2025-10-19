@@ -1,8 +1,12 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import img from "../../assets/images/image 3.png"
+import Image from "next/image";
 
 export default function IndividualRegistration() {
 const router = useRouter();
@@ -40,17 +44,18 @@ const router = useRouter();
     console.log("Individual Registration:", formData);
     router.push("/verify");
   };
+console.log(img);
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="max-h-screen bg-white flex">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
-        <div className="text-center text-white">
-          <div className="bg-white/20 rounded-3xl p-12 backdrop-blur-sm">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center">
+        <div className="text-center w-full h-full text-white">
+          <div className="w-full h-full">
             <img
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=600&fit=crop"
+              src={img.src}
               alt="Modern building"
-              className="rounded-2xl w-full h-96 object-cover shadow-2xl"
+              className="w-full h-full object-fit shadow-2xl"
             />
           </div>
         </div>
@@ -75,7 +80,7 @@ const router = useRouter();
             <p className="text-gray-600">
               Do you already have an account?{" "}
               <button
-                onClick={() => router.back()}
+                onClick={() => router.push("/login")}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Sign in

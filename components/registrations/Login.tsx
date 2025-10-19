@@ -1,8 +1,11 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import img from "../../assets/images/image 1.png";
 
 export default function Login() {
   const router = useRouter();
@@ -27,15 +30,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-white flex ">
       {/* Left Side - Image */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center p-12">
-        <div className="text-center text-white">
-          <div className="bg-white/20 rounded-3xl p-12 backdrop-blur-sm">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center">
+        <div className="text-center w-full h-full text-white">
+          <div className="w-full h-full">
             <img
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=600&fit=crop"
+              src={img.src}
               alt="Modern building"
-              className="rounded-2xl w-full h-96 object-cover shadow-2xl"
+              className="w-full h-full object-cover shadow-2xl"
             />
           </div>
         </div>
@@ -113,7 +116,7 @@ export default function Login() {
               </label>
               <button
                 type="button"
-                onClick={() => router.back()}
+                onClick={() => router.push('/forgot-password')}
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 Forgot password?
@@ -134,7 +137,7 @@ export default function Login() {
             <p className="text-gray-600">
               New user?{" "}
               <button
-                onClick={() => router.back()}
+                onClick={() => router.push("/register/individual")}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Sign up here
@@ -142,7 +145,7 @@ export default function Login() {
             </p>
             <p className="text-gray-500 text-sm mt-2">or</p>
             <button
-              onClick={() => router.back()}
+              onClick={() => router.push("/register/business")}
               className="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2"
             >
               Create a business page
