@@ -21,9 +21,10 @@ import {
   DollarSign,
   UserPlus
 } from 'lucide-react'
-import { PostCard } from './PostCard';
+import { PostCard } from '../PostCard';
+// import { PostCard } from './PostCard';
 
-export function ProfilePage({ user, posts = [] }) {
+export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedUser, setEditedUser] = useState(user)
 
@@ -203,7 +204,7 @@ export function ProfilePage({ user, posts = [] }) {
 
         <TabsContent value="posts" className="mt-6 space-y-4">
           {posts.length > 0 ? (
-            posts.map(post => (
+            posts.map((post: any) => (
               <PostCard key={post.id} post={post} />
             ))
           ) : (

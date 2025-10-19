@@ -14,8 +14,9 @@ import {
   Calendar,
   CheckCheck
 } from 'lucide-react'
+import { initialNotifications } from '@/lib/helper';
 
-export function NotificationsPage({ notifications: initialNotifications }) {
+export function NotificationsPage({ notifications: initialNotifications }: {notifications?: any}) {
   const [notifications, setNotifications] = useState(initialNotifications)
 
   const getIcon = (type: any) => {

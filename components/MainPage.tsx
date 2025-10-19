@@ -44,10 +44,14 @@ import {
 } from "@/lib/helper";
 import { SearchBar } from "./SearchBar";
 import { PostCard } from "./PostCard";
-import { NotificationsPage } from "./NotificationsPage";
-import { MessagesPage } from "./MessagesPage";
-import { ProfilePage } from "./ProfilePage";
-import { SettingsPage } from "./SettingsPage";
+import { NotificationsPage } from "./pages/NotificationsPage";
+import { MessagesPage } from "./pages/MessagesPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { SettingsPage } from "./pages/SettingsPage";
+// import { NotificationsPage } from "./pages/NotificationsPage";
+// import { MessagesPage } from "./pages/MessagesPage";
+// import { ProfilePage } from "./ProfilePage";
+// import { SettingsPage } from "./SettingsPage";
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("home");
@@ -340,7 +344,7 @@ function MainPage() {
                 </div>
 
                 {/* Right Sidebar */}
-                <div className="hidden lg:block space-y-4">
+                <div className="hidden sticky sti top-0 lg:block space-y-4">
                   {/* Balance Card */}
                   <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
                     <CardHeader>

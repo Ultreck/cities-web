@@ -69,9 +69,10 @@ const CommentsDailog = ({
   };
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={() =>setIsOpen(true)} >
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent className="max:w-7xl bg-gray-100">
+
+        <DialogContent className="sm:max-w-[600px] w-full bg-gray-100">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-1 ">
               <button className="text" onClick={() => setIsOpen(false)}>
@@ -80,6 +81,9 @@ const CommentsDailog = ({
               Comments({comments.length})
             </DialogTitle>
             <DialogDescription>
+              View and add comments on this post.
+            </DialogDescription>
+          </DialogHeader>
               <div className="">
                 <div className="text">
                   <div className="flex items-start justify-between">
@@ -118,8 +122,8 @@ const CommentsDailog = ({
                         src={post.image}
                         alt={post.title}
                         width={600}
-                        height={400}
-                        className="w-full h-auto"
+                        height={300}
+                        className="w-full h-62"
                         placeholder="blur"
                       />
                     </div>
@@ -181,7 +185,7 @@ const CommentsDailog = ({
                     </Button>
                   </div>
                 </div>
-                <ScrollArea className="h-[250px] bg-white w-full rounded-md p-4">
+                <ScrollArea className="h-[220px] bg-white w-full rounded-md p-4">
                   <div className="text relative">
                     <Input
                       type="text"
@@ -224,7 +228,7 @@ const CommentsDailog = ({
                       </div>
                       {co.replies.length > 0 &&
                         co.replies.map((rep) => (
-                          <div className="text ml-10">
+                          <div key={rep.id} className="text ml-10">
                             <div className="flex gap-3 my-5 flex-1">
                               <Avatar>
                                 <AvatarImage
@@ -260,7 +264,7 @@ const CommentsDailog = ({
                             </div>
                             {rep.replies.length > 0 &&
                               rep.replies.map((subrep) => (
-                                <div className="text ml-10">
+                                <div key={subrep.id} className="text ml-10">
                                   <div className="flex gap-3 my-5 flex-1">
                                     <Avatar>
                                       <AvatarImage
@@ -304,8 +308,6 @@ const CommentsDailog = ({
                   ))}
                 </ScrollArea>
               </div>
-            </DialogDescription>
-          </DialogHeader>
         </DialogContent>
       </Dialog>
     </div>

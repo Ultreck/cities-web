@@ -1,10 +1,11 @@
 import MainPage from '@/components/MainPage'
+import DashboardCity from '@/components/pages/DashboardCity'
 import React from 'react'
 
 const DashboardPage = () => {
   return (
     <div>
-        <MainPage/>
+        <DashboardCity/>
     </div>
   )
 }

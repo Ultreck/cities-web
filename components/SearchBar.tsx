@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export function SearchBar({ placeholder = "Search...", onSearch, data = [] }) {
+export function SearchBar({ placeholder = "Search...", onSearch, data = [] }: {placeholder: string; onSearch: any; data: any}) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [showResults, setShowResults] = useState(false)
@@ -19,7 +19,7 @@ export function SearchBar({ placeholder = "Search...", onSearch, data = [] }) {
     }
 
     // Filter data based on query
-    const filtered = data.filter(item => {
+    const filtered = data.filter((item: any) => {
       const searchText = query.toLowerCase()
       return (
         item.name?.toLowerCase().includes(searchText) ||
@@ -34,7 +34,7 @@ export function SearchBar({ placeholder = "Search...", onSearch, data = [] }) {
     setShowResults(true)
   }, [query, data])
 
-  const handleSelect = (item) => {
+  const handleSelect = (item: any) => {
     if (onSearch) {
       onSearch(item)
     }

@@ -21,6 +21,8 @@ import {
 import Image, { StaticImageData } from "next/image";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import CommentsDailog from "./dialogs/CommentsDailog";
+import { AiOutlineComment } from "react-icons/ai";
+import RepostDialog from "./dialogs/RepostDialog";
 
 export interface Post {
   id: number;
@@ -65,7 +67,7 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
 
   const handleShare = () => {
     if (onShare) onShare(post.id);
-    alert(`Sharing: ${post.title}`);
+    // alert(`Sharing: ${post.title}`);
   };
 
   const formatNumber = (num: number) => {
@@ -121,6 +123,21 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
         )}
 
         <div className="flex items-center justify-between pt-4 border-t">
+          <CommentsDailog post={post}>
+            <p className="text">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+                onClick={handleComment}
+              >
+                <AiOutlineComment className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {formatNumber(post.comments)}
+                </span>
+              </Button>
+            </p>
+          </CommentsDailog>
           <Button
             variant={isLiked ? "default" : "ghost"}
             size="sm"
@@ -131,33 +148,19 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
             <span className="hidden sm:inline">{formatNumber(likes)}</span>
           </Button>
 
-          <CommentsDailog post={post} >
-            <p className="text">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2"
-                onClick={handleComment}
-              >
-                <HiMiniUserGroup className="w-4 h-4" />
-                <span className="hidden sm:inline">
-                  {formatNumber(post.comments)}
-                </span>
-              </Button>
-            </p>
-          </CommentsDailog>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-2"
-            onClick={handleShare}
-          >
-            <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">
-              {formatNumber(post.shares)}
-            </span>
-          </Button>
+          <RepostDialog>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-2"
+              onClick={handleShare}
+            >
+              <HiMiniUserGroup className="w-4 h-4" />
+              <span className="hidden sm:inline">
+                {formatNumber(post.shares)}
+              </span>
+            </Button>
+          </RepostDialog>
 
           <Button variant="ghost" size="sm" className="flex items-center gap-2">
             <Eye className="w-4 h-4" />

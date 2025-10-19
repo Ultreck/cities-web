@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,14 +16,15 @@ import {
   Info,
   MessageCircle
 } from 'lucide-react'
+import { initialMessages } from '@/lib/helper'
 
-export function MessagesPage({ messages: initialMessages }) {
+export function MessagesPage({ messages: initialMsgs }: {messages?: any}) {
   const [messages, setMessages] = useState(initialMessages)
   const [selectedChat, setSelectedChat] = useState(null)
   const [messageText, setMessageText] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredMessages = messages.filter(msg =>
+  const filteredMessages = messages?.filter((msg: any) =>
     msg.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
     msg.username.toLowerCase().includes(searchQuery.toLowerCase())
   )
@@ -36,8 +39,8 @@ export function MessagesPage({ messages: initialMessages }) {
       time: 'Just now'
     }
 
-    setMessages(prev =>
-      prev.map(msg =>
+    setMessages((prev: any) =>
+      prev?.map((msg: any) =>
         msg.id === selectedChat.id
           ? {
               ...msg,
@@ -83,7 +86,7 @@ export function MessagesPage({ messages: initialMessages }) {
           </CardHeader>
           <ScrollArea className="flex-1">
             <CardContent className="space-y-2">
-              {filteredMessages.map(msg => (
+              {filteredMessages?.map(msg => (
                 <button
                   key={msg.id}
                   onClick={() => setSelectedChat(msg)}
@@ -168,7 +171,7 @@ export function MessagesPage({ messages: initialMessages }) {
               {/* Messages */}
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-4">
-                  {selectedChat?.messages.map(message => (
+                  {selectedChat?.messages?.map(message => (
                     <div
                       key={message.id}
                       className={`flex ${message.sender === 'me' ? 'justify-end' : 'justify-start'}`}
