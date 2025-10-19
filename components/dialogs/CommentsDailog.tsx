@@ -21,6 +21,9 @@ import { Button } from "../ui/button";
 import { Eye, Share2, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
+import { Input } from "../ui/input";
+import { RiSendPlaneFill } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
 const CommentsDailog = ({
   children,
@@ -34,6 +37,8 @@ const CommentsDailog = ({
   const [isLiked, setIsLiked] = useState(post.likedByUser);
   const [likes, setLikes] = useState(post.likes);
   const [showComments, setShowComments] = useState(false);
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleLike = () => {
     const newLikedState = !isLiked;
@@ -59,14 +64,20 @@ const CommentsDailog = ({
     return num.toString();
   };
 
+  const handleChanges = (e: any) => {
+    console.log(e.target.value);
+  };
   return (
     <div>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={() =>setIsOpen(true)} >
         <DialogTrigger asChild>{children}</DialogTrigger>
-        <DialogContent className="max-w-4/5 bg-gray-100">
+        <DialogContent className="max:w-7xl bg-gray-100">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-1 ">
-              <IoIosArrowBack /> Comments({comments.length})
+              <button className="text" onClick={() => setIsOpen(false)}>
+                <IoIosArrowBack />
+              </button>
+              Comments({comments.length})
             </DialogTitle>
             <DialogDescription>
               <div className="">
@@ -134,6 +145,7 @@ const CommentsDailog = ({
                         <Button
                           variant="ghost"
                           size="sm"
+                          disabled
                           className="flex items-center gap-2"
                           onClick={handleComment}
                         >
@@ -170,6 +182,19 @@ const CommentsDailog = ({
                   </div>
                 </div>
                 <ScrollArea className="h-[250px] bg-white w-full rounded-md p-4">
+                  <div className="text relative">
+                    <Input
+                      type="text"
+                      name="comment"
+                      id="comment"
+                      className="h-12 "
+                      placeholder="Add your comment here..."
+                      onChange={handleChanges}
+                    />
+                    <button className="text absolute right-0 top-0 hover:bg-blue-500 flex justify-center items-center h-full w-12 bg-blue-600 rounded-br-lg rounded-tr-lg">
+                      <RiSendPlaneFill className="text-white" size={20} />
+                    </button>
+                  </div>
                   {comments.map((co) => (
                     <div key={co.id}>
                       <div className="flex gap-3 my-5 flex-1">
