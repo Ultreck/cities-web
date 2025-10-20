@@ -70,7 +70,7 @@ const SideNavbar = () => {
     </Link>
   );
   return (
-    <div className="w-full lg:border-r h-full " >
+    <div className="w-full sticky top-0 lg:border-r h-full pt-10" >
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
