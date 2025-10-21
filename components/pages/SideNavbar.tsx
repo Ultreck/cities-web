@@ -32,7 +32,7 @@ const SideNavbar = () => {
   const navItems = [
     { label: "Home", icon: Home, href: "/n" },
     { label: "Community", icon: User, href: "/n/communities" },
-    { label: "For Sale", icon: ShoppingBag, href: "/n/markets" },
+    { label: "Market", icon: ShoppingBag, href: "/n/markets" },
     { label: "Rewards", icon: Gift, href: "/n/rewards" },
     // { label: "Rewards", icon: Gift, href: "/n/rewards" },
   ];
@@ -53,7 +53,7 @@ const SideNavbar = () => {
      href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all relative ${
         active
-          ? "bg-primary text-primary-foreground shadow-sm"
+          ? "bg-blue-600 text-primary-foreground shadow-sm"
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >

@@ -9,10 +9,10 @@ const LoginedLayout = ({ children }: { children: React.ReactNode }) => {
         <Header />
       </div>
       <div className="text flex ">
-        <div className="text fixed bg-white w-1/5">
+        <div className="text fixed bg-white lg:w-1/5">
           <SideNavbar />
         </div>
-        <div className="text w-4/5 px-7 my-10 ml-[20%]">{children}</div>
+        <div className="text lg:w-4/5 lg:px-7 lg:my-10 lg:ml-[20%]">{children}</div>
       </div>
     </div>
   );

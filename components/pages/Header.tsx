@@ -70,13 +70,13 @@ const Header = () => {
             <Link href="/n/notifications" className="relative">
               <Bell className="w-5 h-5" />
               {unreadNotifications > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                <span className="absolute top-0 right-0 w-2 h-2 bg-destructive rounded-full"></span>
               )}
             </Link>
             <Link href="/n/messages" className="relative">
               <MessageSquare className="w-5 h-5" />
               {unreadMessages > 0 && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                <span className="absolute top-0 right-0 w-2 h-2 bg-destructive rounded-full"></span>
               )}
             </Link>
             <Avatar className="w-8 h-8 cursor-pointer">

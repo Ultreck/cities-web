@@ -1,72 +1,90 @@
-'use client';
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Heart, 
-  MessageCircle, 
-  UserPlus, 
-  Share2, 
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Heart,
+  MessageCircle,
+  UserPlus,
+  Share2,
   Calendar,
-  CheckCheck
-} from 'lucide-react'
-import { initialNotifications } from '@/lib/helper';
+  CheckCheck,
+} from "lucide-react";
+import { initialNotifications } from "@/lib/helper";
 
-export function NotificationsPage({ notifications: initialNotifications }: {notifications?: any}) {
-  const [notifications, setNotifications] = useState(initialNotifications)
+export type NotificationProps = {
+  id: number;
+  type: string;
+  user: string;
+  username: string;
+  action: string;
+  content?: string | null; // 👈 make this optional or nullable
+  time: string;
+  read: boolean;
+  avatar: string;
+};
 
+
+export function NotificationsPage() {
+  const [notifications, setNotifications] = useState<NotificationProps[]>(initialNotifications);
+
+
+  useEffect(() => {
+  setNotifications(initialNotifications);
+  }, []);
+  
   const getIcon = (type: any) => {
     switch (type) {
-      case 'like':
-        return <Heart className="w-5 h-5 text-red-500" />
-      case 'comment':
-        return <MessageCircle className="w-5 h-5 text-blue-500" />
-      case 'follow':
-        return <UserPlus className="w-5 h-5 text-green-500" />
-      case 'share':
-        return <Share2 className="w-5 h-5 text-purple-500" />
-      case 'community':
-        return <Calendar className="w-5 h-5 text-orange-500" />
+      case "like":
+        return <Heart className="w-5 h-5 text-red-500" />;
+      case "comment":
+        return <MessageCircle className="w-5 h-5 text-blue-500" />;
+      case "follow":
+        return <UserPlus className="w-5 h-5 text-green-500" />;
+      case "share":
+        return <Share2 className="w-5 h-5 text-purple-500" />;
+      case "community":
+        return <Calendar className="w-5 h-5 text-orange-500" />;
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const markAsRead = (id: any) => {
     setNotifications((prev: any) =>
       prev.map((notif: any) =>
         notif.id === id ? { ...notif, read: true } : notif
       )
-    )
-  }
+    );
+  };
 
   const markAllAsRead = () => {
-    setNotifications(prev =>
-      prev.map(notif => ({ ...notif, read: true }))
-    )
-  }
+    setNotifications((prev) =>
+      prev?.map((notif) => ({ ...notif, read: true }))
+    );
+  };
 
-  const unreadCount = notifications.filter(n => !n.read).length
+  const unreadCount = notifications?.filter((n) => !n.read).length;
 
-  const filterNotifications = (filter) => {
+  const filterNotifications = (filter: string) => {
     switch (filter) {
-      case 'unread':
-        return notifications.filter(n => !n.read)
-      case 'read':
-        return notifications.filter(n => n.read)
+      case "unread":
+        return notifications?.filter((n) => !n.read);
+      case "read":
+        return notifications?.filter((n) => n.read);
       default:
-        return notifications
+        return notifications;
     }
-  }
+  };
 
-  const NotificationItem = ({ notification }) => (
-    <Card 
+  const NotificationItem = ({ notification }: {notification: NotificationProps}) => (
+    <Card
       className={`mb-3 cursor-pointer transition-all hover:shadow-md ${
-        !notification.read ? 'bg-primary/5 border-primary/20' : ''
+        !notification.read ? "bg-primary/5 border-primary/20" : ""
       }`}
       onClick={() => markAsRead(notification.id)}
     >
@@ -80,14 +98,15 @@ export function NotificationsPage({ notifications: initialNotifications }: {noti
               {getIcon(notification.type)}
             </div>
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
                 <p className="text-sm">
-                  <span className="font-semibold">{notification.user}</span>
-                  {' '}
-                  <span className="text-muted-foreground">{notification.action}</span>
+                  <span className="font-semibold">{notification.user}</span>{" "}
+                  <span className="text-muted-foreground">
+                    {notification.action}
+                  </span>
                 </p>
                 {notification.content && (
                   <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
@@ -106,7 +125,7 @@ export function NotificationsPage({ notifications: initialNotifications }: {noti
         </div>
       </CardContent>
     </Card>
-  )
+  );
 
   return (
     <div className="space-y-4">
@@ -115,7 +134,8 @@ export function NotificationsPage({ notifications: initialNotifications }: {noti
           <h2 className="text-3xl font-bold">Notifications</h2>
           {unreadCount > 0 && (
             <p className="text-sm text-muted-foreground mt-1">
-              You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+              You have {unreadCount} unread notification
+              {unreadCount !== 1 ? "s" : ""}
             </p>
           )}
         </div>
@@ -156,40 +176,49 @@ export function NotificationsPage({ notifications: initialNotifications }: {noti
               </CardContent>
             </Card>
           ) : (
-            filterNotifications('all').map(notification => (
-              <NotificationItem key={notification.id} notification={notification} />
+            filterNotifications("all").map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+              />
             ))
           )}
         </TabsContent>
 
         <TabsContent value="unread" className="mt-6">
-          {filterNotifications('unread').length === 0 ? (
+          {filterNotifications("unread").length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
                 <p className="text-muted-foreground">No unread notifications</p>
               </CardContent>
             </Card>
           ) : (
-            filterNotifications('unread').map(notification => (
-              <NotificationItem key={notification.id} notification={notification} />
+            filterNotifications("unread").map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+              />
             ))
           )}
         </TabsContent>
 
         <TabsContent value="read" className="mt-6">
-          {filterNotifications('read').length === 0 ? (
+          {filterNotifications("read").length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
                 <p className="text-muted-foreground">No read notifications</p>
               </CardContent>
             </Card>
           ) : (
-            filterNotifications('read').map(notification => (
-              <NotificationItem key={notification.id} notification={notification} />
+            filterNotifications("read").map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                notification={notification}
+              />
             ))
           )}
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

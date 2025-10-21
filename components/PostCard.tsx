@@ -19,10 +19,11 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Image, { StaticImageData } from "next/image";
-import { HiMiniUserGroup } from "react-icons/hi2";
+import { HiMiniUserGroup, HiOutlineShare } from "react-icons/hi2";
 import CommentsDailog from "./dialogs/CommentsDailog";
 import { AiOutlineComment } from "react-icons/ai";
 import RepostDialog from "./dialogs/RepostDialog";
+import Link from "next/link";
 
 export interface Post {
   id: number;
@@ -103,7 +104,7 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2">
         <div>
           <h3 className="font-semibold mb-2">{post.title}</h3>
           <p className="text-sm text-muted-foreground">{post.content}</p>
@@ -121,7 +122,40 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
             />
           </div>
         )}
-
+        <div className="text flex items-center justify-between pt-2 border-t">
+          <CommentsDailog post={post}>
+            <Link
+              href={`#`}
+              className="flex items-center gap-1 text-blue-600 hover:underline"
+            >
+              <span className="hidden sm:inline">
+                {formatNumber(post.comments)}
+              </span>
+              <span className="hidden sm:inline">Comments</span>
+            </Link>
+          </CommentsDailog>
+          <Link
+            href={`/n/${post.id}/post-engagement?type=likes`}
+            className="flex items-center gap-1 text-blue-600 hover:underline"
+          >
+            <span className="">{formatNumber(likes)}</span>
+            <span className="hidden sm:inline">Likes</span>
+          </Link>
+          <Link
+            href={`#`}
+            className="flex items-center gap-1 text-blue-600 hover:underline"
+          >
+            <span className="">{formatNumber(post.shares)}</span>
+            <span className="hidden sm:inline">Shares</span>
+          </Link>
+          <Link
+             href={`/n/${post.id}/post-engagement?type=views`}
+            className="flex items-center gap-1 text-blue-600 hover:underline"
+          >
+            <span className="">{formatNumber(post.views)}</span>
+            <span className="hidden sm:inline">Views</span>
+          </Link>
+        </div>
         <div className="flex items-center justify-between pt-4 border-t">
           <CommentsDailog post={post}>
             <p className="text">
@@ -132,9 +166,7 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
                 onClick={handleComment}
               >
                 <AiOutlineComment className="w-4 h-4" />
-                <span className="hidden sm:inline">
-                  {formatNumber(post.comments)}
-                </span>
+                <span className="hidden sm:inline">Comments</span>
               </Button>
             </p>
           </CommentsDailog>
@@ -145,7 +177,7 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
             onClick={handleLike}
           >
             <ThumbsUp className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
-            <span className="hidden sm:inline">{formatNumber(likes)}</span>
+            <span className="hidden sm:inline">Likes</span>
           </Button>
 
           <RepostDialog>
@@ -155,26 +187,24 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
               className="flex items-center gap-2"
               onClick={handleShare}
             >
-              <HiMiniUserGroup className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {formatNumber(post.shares)}
-              </span>
+              <HiOutlineShare className="w-4 h-4" />
+              <span className="hidden sm:inline">Shares</span>
             </Button>
           </RepostDialog>
 
           <Button variant="ghost" size="sm" className="flex items-center gap-2">
             <Eye className="w-4 h-4" />
-            <span className="hidden sm:inline">{formatNumber(post.views)}</span>
+            <span className="hidden sm:inline">Views</span>
           </Button>
         </div>
 
-        {showComments && (
+        {/* {showComments && (
           <div className="pt-4 border-t space-y-3">
             <div className="text-sm text-muted-foreground">
               Comments section coming soon...
             </div>
           </div>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );

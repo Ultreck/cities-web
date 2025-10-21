@@ -5,12 +5,19 @@ import { initialEvents, initialJobs, initialProperties } from "@/lib/helper";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 
 const Market = () => {
   return (
     <div>
       <div className="space-y-6">
+        <div className="text flex items-center justify-between">
+
         <h2 className="text-3xl font-bold">Marketplace</h2>
+        <Link href="/n/markets/create-product">
+          <Button className="bg-blue-500 hover:bg-blue-600" >Create Product</Button>
+        </Link>
+        </div>
 
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="w-full sm:w-auto grid grid-cols-5 sm:flex">
