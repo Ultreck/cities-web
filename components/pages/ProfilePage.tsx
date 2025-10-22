@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { PostCard } from "../PostCard";
 import Image from "next/image";
+import { mockSellerProfile } from "@/lib/mockData";
 // import { PostCard } from './PostCard';
 
 export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
@@ -39,6 +40,15 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
     setEditedUser(user);
     setIsEditing(false);
   };
+
+    const [activeTab, setActiveTab] = useState<"posts" | "community" | "media">("posts");
+    const seller = mockSellerProfile;
+  
+    const tabs = [
+      { id: "posts", label: "Posts" },
+      { id: "community", label: "Community" },
+      { id: "media", label: "Media" },
+    ];
 
   return (
     <div className="space-y-6">
@@ -228,7 +238,7 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
       </div>
 
       {/* Content Tabs */}
-      <Tabs defaultValue="posts" className="w-full">
+      {/* <Tabs defaultValue="posts" className="w-full">
         <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="community">Community</TabsTrigger>
@@ -277,7 +287,61 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
+
+
+       {/* Tabs */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="flex border-b">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex-1 py-4 font-semibold text-center transition ${
+                  activeTab === tab.id
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-4">
+            {activeTab === "posts" && (
+              <div className="grid grid-cols-3 gap-2">
+                {seller.posts?.map((post) => (
+                  <div
+                    key={post.id}
+                    className="aspect-square rounded-lg overflow-hidden bg-gray-200 cursor-pointer hover:opacity-80 transition"
+                  >
+                    <img
+                      src={post.image}
+                      alt={`post-${post.id}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {activeTab === "community" && (
+              <div className="text-center py-8 text-gray-500">
+                <p>No community posts yet</p>
+              </div>
+            )}
+
+            {activeTab === "media" && (
+              <div className="text-center py-8 text-gray-500">
+                <p>No media yet</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+      
     </div>
   );
 }
