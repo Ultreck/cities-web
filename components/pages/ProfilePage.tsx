@@ -1,43 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { 
-  MapPin, 
-  Calendar, 
-  Users, 
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  MapPin,
+  Calendar,
+  Users,
   Edit,
   Mail,
   Phone,
   MessageCircle,
   Share2,
   DollarSign,
-  UserPlus
-} from 'lucide-react'
-import { PostCard } from '../PostCard';
+  UserPlus,
+} from "lucide-react";
+import { PostCard } from "../PostCard";
+import Image from "next/image";
 // import { PostCard } from './PostCard';
 
-export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedUser, setEditedUser] = useState(user)
+export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUser, setEditedUser] = useState(user);
 
   const handleSave = () => {
     // Save logic here
-    setIsEditing(false)
-    alert('Profile updated successfully!')
-  }
+    setIsEditing(false);
+    alert("Profile updated successfully!");
+  };
 
   const handleCancel = () => {
-    setEditedUser(user)
-    setIsEditing(false)
-  }
+    setEditedUser(user);
+    setIsEditing(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -48,10 +49,16 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
             {/* Avatar and Basic Info */}
             <div className="flex flex-col items-center md:items-start gap-4">
               <Avatar className="w-32 h-32">
-                <AvatarFallback className="text-4xl">{user.avatar}</AvatarFallback>
+                <AvatarFallback className="text-4xl">
+                  {user?.avatar}
+                </AvatarFallback>
               </Avatar>
               {!isEditing && (
-                <Button onClick={() => setIsEditing(true)} variant="outline" className="w-full">
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  variant="outline"
+                  className="w-full"
+                >
                   <Edit className="w-4 h-4 mr-2" />
                   Edit Profile
                 </Button>
@@ -67,14 +74,21 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
                       <Label>Name</Label>
                       <Input
                         value={editedUser.name}
-                        onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({ ...editedUser, name: e.target.value })
+                        }
                       />
                     </div>
                     <div>
                       <Label>Username</Label>
                       <Input
                         value={editedUser.username}
-                        onChange={(e) => setEditedUser({ ...editedUser, username: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({
+                            ...editedUser,
+                            username: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div>
@@ -82,68 +96,87 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
                       <Input
                         type="email"
                         value={editedUser.email}
-                        onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({
+                            ...editedUser,
+                            email: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div>
                       <Label>Phone</Label>
                       <Input
                         value={editedUser.phone}
-                        onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({
+                            ...editedUser,
+                            phone: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="md:col-span-2">
                       <Label>Location</Label>
                       <Input
                         value={editedUser.location}
-                        onChange={(e) => setEditedUser({ ...editedUser, location: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({
+                            ...editedUser,
+                            location: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="md:col-span-2">
                       <Label>Bio</Label>
                       <Textarea
                         value={editedUser.bio}
-                        onChange={(e) => setEditedUser({ ...editedUser, bio: e.target.value })}
+                        onChange={(e) =>
+                          setEditedUser({ ...editedUser, bio: e.target.value })
+                        }
                         rows={3}
                       />
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <Button onClick={handleSave}>Save Changes</Button>
-                    <Button onClick={handleCancel} variant="outline">Cancel</Button>
+                    <Button onClick={handleCancel} variant="outline">
+                      Cancel
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <>
                   <div>
-                    <h2 className="text-3xl font-bold">{user.name}</h2>
-                    <p className="text-muted-foreground">{user.username}</p>
+                    <h2 className="text-3xl font-bold">{user?.name}</h2>
+                    <p className="text-muted-foreground">{user?.username}</p>
                   </div>
 
-                  <p className="text-sm">{user.bio}</p>
+                  <p className="text-sm">{user?.bio}</p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <MapPin className="w-4 h-4" />
-                      {user.location}
+                      {user?.location}
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      Joined {user.joinDate}
+                      Joined {user?.joinDate}
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="w-4 h-4" />
-                      {user.email}
+                      {user?.email}
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Phone className="w-4 h-4" />
-                      {user.phone}
+                      {user?.phone}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
-                    <span className="font-semibold">{user.connections}</span>
+                    <span className="font-semibold">{user?.connections}</span>
                     <span className="text-muted-foreground">connections</span>
                   </div>
 
@@ -176,19 +209,19 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
       <div className="grid grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold">{user.posts}</div>
+            <div className="text-3xl font-bold">{user?.posts}</div>
             <div className="text-sm text-muted-foreground">Posts</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold">{user.communities}</div>
+            <div className="text-3xl font-bold">{user?.communities}</div>
             <div className="text-sm text-muted-foreground">Communities</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <div className="text-3xl font-bold">{user.media}</div>
+            <div className="text-3xl font-bold">{user?.media}</div>
             <div className="text-sm text-muted-foreground">Media</div>
           </CardContent>
         </Card>
@@ -202,10 +235,19 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
           <TabsTrigger value="media">Media</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="posts" className="mt-6 space-y-4">
+        <TabsContent value="posts" className="mt-6 space-y-4 grid gridcols-2 md:grid-cols-3 gap-4">
           {posts.length > 0 ? (
             posts.map((post: any) => (
-              <PostCard key={post.id} post={post} />
+              <div key={post.id} className="rounded-lg hover:shadow-lg transition-shadow hover:scale-102">
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  width={200}
+                  height={200}
+                  className="w-full h-auto"
+                  placeholder="blur"
+                />
+              </div>
             ))
           ) : (
             <Card>
@@ -219,7 +261,9 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
         <TabsContent value="community" className="mt-6">
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">Community content coming soon...</p>
+              <p className="text-muted-foreground">
+                Community content coming soon...
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -227,11 +271,13 @@ export function ProfilePage({ user, posts = [] }: {user: any; posts: any}) {
         <TabsContent value="media" className="mt-6">
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">Media gallery coming soon...</p>
+              <p className="text-muted-foreground">
+                Media gallery coming soon...
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
