@@ -3,6 +3,7 @@
 import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommunityCard } from "@/types/type-props";
+import Link from "next/link";
 
 export default function CommunityGrid({filteredCommunities}:{filteredCommunities:CommunityCard[]}) {
 
@@ -53,10 +54,11 @@ export default function CommunityGrid({filteredCommunities}:{filteredCommunities
               <p className="text-xs text-gray-500 mb-4">
                 {community.conversationCount} conversation
               </p>
-
+                <Link className="w-full" href={`/n/communities/${community.id}`}>
               <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm">
                 View
               </Button>
+                </Link>
             </div>
           ))}
         </div>

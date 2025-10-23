@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
-import { Calendar, Eye, FileText, Heart, MapPin, Send, ShoppingBag, TrendingUp } from "lucide-react";
+import { Calendar, Eye, FileText, Heart, MapPin, Send, ShoppingBag, TrendingUp, Wallet } from "lucide-react";
 import Link from "next/link";
 
 const DashboardCity = () => {
@@ -104,14 +104,18 @@ const DashboardCity = () => {
                 +₦0.00 last 7 days
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="secondary" size="sm">
+                <Link className="w-full" href="/n/wallets/transfers">
+                <Button className="w-full" variant="secondary" size="sm">
                   <Send className="w-4 h-4 mr-2" />
                   Transfer
                 </Button>
-                <Button variant="secondary" size="sm">
-                  ₦
-                  Fund
+                </Link>
+                <Link className="w-full" href="/n/wallets/">
+                <Button className="w-full" variant="secondary" size="sm">
+                  <Wallet className="w-4 h-4 mr-2" />
+                  wallet
                 </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>

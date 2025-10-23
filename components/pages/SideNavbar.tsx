@@ -20,6 +20,7 @@ import {
   DollarSign,
   Menu,
   X,
+  Wallet,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -33,6 +34,7 @@ const SideNavbar = () => {
     { label: "Home", icon: Home, href: "/n" },
     { label: "Community", icon: User, href: "/n/communities" },
     { label: "Market", icon: ShoppingBag, href: "/n/markets" },
+    { label: "Wallet", icon: Wallet, href: "/n/wallets" },
     { label: "Rewards", icon: Gift, href: "/n/rewards" },
     // { label: "Rewards", icon: Gift, href: "/n/rewards" },
   ];
