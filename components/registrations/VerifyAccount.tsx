@@ -1,14 +1,18 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import clientApi from "@/lib/clientApi";
+import useFormHook from "@/hooks/use-form-hook";
+import { toast } from "react-toastify";
 
 export default function VerifyAccount() {
- const router = useRouter();
+  const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-
+  const [loading, setLoading] = useState(false);
+  const { otpEmail, otpPhoneNumber } = useFormHook();
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return;
     const newOtp = [...otp];
@@ -32,11 +36,37 @@ export default function VerifyAccount() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join("");
     console.log("OTP Verification:", otpCode);
-    router.push("/finish-setup");
+    setLoading(true);
+
+
+    
+    if (typeof otpCode !== "number" || isNaN(otpCode)) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
+    const data = {
+      identity: otpPhoneNumber,
+      otp: String(otpCode),
+    };
+    console.log(data);
+    
+    const response = await clientApi.post(
+      "/register/account_verification",
+      data
+    );
+    console.log(response.data.status);
+    if (response.data.status) {
+      router.push("/finish-setup");
+      toast.success(response.data.message || "✅ OTP verified successfully!");
+    } else {
+      setOtp(["", "", "", "", "", ""]);
+      toast.error(response.data.message || "Otp verification process failed");
+    }
   };
 
   return (
@@ -68,7 +98,7 @@ export default function VerifyAccount() {
               <label className="block text-sm font-semibold text-gray-900 mb-4">
                 Enter OTP code
               </label>
-              <div className="flex gap-3 justify-between">
+              <div className="flex gap-1 justify-between">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
@@ -79,7 +109,7 @@ export default function VerifyAccount() {
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-lg font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className="w-14 h-14 text-center text-lg font-semibold border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   />
                 ))}
               </div>
@@ -108,4 +138,3 @@ export default function VerifyAccount() {
     </div>
   );
 }
-

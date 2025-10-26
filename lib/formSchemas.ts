@@ -24,7 +24,7 @@ export const userFormSchema = z.object({
   pin: z
     .string()
     .min(6, { message: "Password must be at least 6 digits long" })
-    .max(6, { message: "Password must not be longer than 6 digits" })
+    .max(10, { message: "Password must not be longer than 10 digits" })
     .regex(/^[0-9]+$/, { message: "Password must contain only numbers" }),
 });
 
@@ -53,9 +53,12 @@ export const businessFormSchema = z.object({
     .max(15, {
       message: "Business category should not longer than 15 characters",
     }),
+  reffer_by: z
+    .string()
+    .optional(),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 digits long" })
-    .max(6, { message: "Password must not be longer than 6 digits" })
+    .max(10, { message: "Password must not be longer than 10 digits" })
     .regex(/^[0-9]+$/, { message: "Password must contain only numbers" }),
 });

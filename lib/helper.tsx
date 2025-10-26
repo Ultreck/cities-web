@@ -1,4 +1,5 @@
 // Mock data for the MCity application
+import * as Flags from "country-flag-icons/react/3x2";
 import img1 from '../assets/images/Image (1).png';
 import img2 from '../assets/images/Image (2).png';
 import img3 from '../assets/images/Image.png';
@@ -613,3 +614,13 @@ export const commentsData = [
   }
 ];
 
+interface CountryFlagProps {
+  code: string; 
+  size?: string;
+}
+
+export default function CountryFlag({ code, size = "w-6 h-6" }: CountryFlagProps) {
+  
+  const Flag = (Flags as Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>>)[code];
+  return Flag ? <Flag className={size} aria-label={code} /> : null;
+}

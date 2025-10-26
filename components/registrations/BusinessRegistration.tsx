@@ -1,46 +1,57 @@
-'use client';
+"use client";
 
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import img from "../../assets/images/image 2.png"
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import img from "../../assets/images/image 2.png";
 
+import clientApi from "@/lib/clientApi";
+import { businessFormSchema } from "@/lib/formSchemas";
+import useParamHook from "@/hooks/use-param-hook";
+import { ChevronLeft, Loader } from "lucide-react";
+import { toast } from "react-toastify";
+import { useState } from "react";
+
+export type userSchemaProps = z.infer<typeof businessFormSchema>;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function BusinessRegistration() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    businessName: "",
-    businessSector: "Information Technology",
-    businessCategory: "unregistered",
-    phone: "",
-    email: "",
-    password: "",
-    termsAccepted: false,
+  const [loading, setLoading] = useState(false);
+  const { router } = useParamHook();
+  const form = useForm<userSchemaProps>({
+    resolver: zodResolver(businessFormSchema),
+    defaultValues: {
+      business_name: "",
+      business_sector: "finance",
+      business_category: "registered",
+      email: "",
+      password: "4040",
+      country_code: "+234",
+      phone_number: '9044633743',
+      reffer_by: "1234567890",
+    },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: (e.target as HTMLInputElement).checked,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  const onSubmit = async (data: userSchemaProps) => {
+    // setLoading(true);
+       setLoading(true);
+       console.log(data);
+       const res = await clientApi.post(`/register/business`, data);
+       setLoading(false);
+       if (res.status) {
+      toast.success("Registration successful!");
+      // setLoading(false);
+      console.log(res);
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle registration logic here
-    console.log("Business Registration:", formData);
-    router.push("/verify");
   };
 
   return (
@@ -85,148 +96,135 @@ export default function BusinessRegistration() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Business Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Business Name
-              </label>
-              <Input
-                type="text"
-                name="businessName"
-                placeholder="My business"
-                value={formData.businessName}
-                onChange={handleChange}
-                className="bg-gray-100 border-gray-200"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email field */}
+              <FormField
+                control={form.control}
+                name="business_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business name</FormLabel>
+                    <FormControl>
+                      <Input className="h-11" placeholder="google" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-
-            {/* Business Sector */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Business Sector
-              </label>
-              <select
-                name="businessSector"
-                value={formData.businessSector}
-                onChange={handleChange}
-                className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option>Information Technology</option>
-                <option>Finance</option>
-                <option>Healthcare</option>
-                <option>Retail</option>
-                <option>Manufacturing</option>
-                <option>Other</option>
-              </select>
-            </div>
-
-            {/* Business Category */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Business Category
-              </label>
-              <div className="flex gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="businessCategory"
-                    value="registered"
-                    checked={formData.businessCategory === "registered"}
-                    onChange={handleChange}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">Registered</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="businessCategory"
-                    value="unregistered"
-                    checked={formData.businessCategory === "unregistered"}
-                    onChange={handleChange}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">Unregistered</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Phone number
-              </label>
-              <div className="flex gap-2">
-                <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
-                  <span className="text-gray-700 font-medium">🇳🇬 +234</span>
-                </div>
-                <Input
-                  type="tel"
-                  name="phone"
-                  placeholder="7000000000"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="flex-1 bg-gray-100 border-gray-200"
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                E-mail
-              </label>
-              <Input
-                type="email"
+              <FormField
+                control={form.control}
+                name="business_sector"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business sector</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-11"
+                        placeholder="Information and technology(It)"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="email"
-                placeholder="lisa.watson@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                className="bg-gray-100 border-gray-200"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-11"
+                        placeholder="you@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
+              <FormField
+                control={form.control}
+                name="country_code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Country code </FormLabel>
+                    <FormControl>
+                      <Input className="h-11" placeholder="100234" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone number</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-11"
+                        placeholder="070*******25"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="business_category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business category</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-11"
+                        placeholder="registered"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Password
-              </label>
-              <Input
-                type="password"
+              <FormField
+                control={form.control}
                 name="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                className="bg-gray-100 border-gray-200"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="h-11"
+                        placeholder="••••••••"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* Terms & Conditions */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                name="termsAccepted"
-                checked={formData.termsAccepted}
-                onChange={handleChange}
-                className="w-5 h-5 rounded border-gray-300 text-blue-600 mt-0.5"
-              />
-              <span className="text-sm text-gray-700">
-                I accept the terms and privacy policy
-              </span>
-            </label>
+               <Button
+            className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
+            type="submit"
+            disabled={loading}
+          >
+            {loading && <Loader className="animate-spin" />}
 
-            {/* Create Business Account Button */}
-            <Button
-              type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-6 text-lg rounded-full font-semibold"
-            >
-              Create business account
-            </Button>
-          </form>
+            {loading ? "Submitting..." : "Submit"}
+          </Button>
+            </form>
+          </Form>
         </div>
       </div>
     </div>
   );
 }
-

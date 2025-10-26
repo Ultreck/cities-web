@@ -3,48 +3,85 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { CalendarIcon, ChevronLeft, Loader } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import img from "../../assets/images/image 3.png"
-import Image from "next/image";
+import { userFormSchema } from "@/lib/formSchemas";
+import z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import useParamHook from "@/hooks/use-param-hook";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import clientApi from "@/lib/clientApi";
+import { toast } from "react-toastify";
+import CountrySelect from "./CountrySelect";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "@/lib/utils";
+import { Calendar } from "../ui/calendar";
+import { format } from "date-fns";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
+import { SelectValue } from "@radix-ui/react-select";
+import { PiEyeSlashThin, PiEyeThin } from "react-icons/pi";
 
+
+
+export type userSchemaProps = z.infer<typeof userFormSchema>;
 export default function IndividualRegistration() {
-const router = useRouter();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "female",
-    dateOfBirth: "",
-    phone: "",
-    email: "",
-    password: "",
-    termsAccepted: false,
+  const params = useSearchParams();
+  const referralCode = params.get("ref") || "ABC123";
+  console.log(referralCode);
+  
+  const [loading, setLoading] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
+  const [month, setMonth] = useState<Date>(new Date());
+  const { router } = useParamHook();
+  const form = useForm<userSchemaProps>({
+    resolver: zodResolver(userFormSchema),
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      pin: "",
+      reffer_by: referralCode || "",
+      country_code: "",
+      date_of_birth: new Date(),
+      phone_number: "",
+    },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: (e.target as HTMLInputElement).checked,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+
+
+  const onSubmit = async (data: userSchemaProps) => {
+    try {
+      setLoading(true);
+      const rawData = { ...data, phone_number: Number(data.phone_number) };
+      console.log(rawData);
+
+      const res = await clientApi.post(`/register/individual`, rawData);
+
+      setLoading(false);
+      console.log(res);
+      
+      if (res.data.status) {
+        toast.success(res.data.message || "✅ User registered successfully!");
+        window.localStorage.setItem("userPhoneNumber", data.phone_number);
+        window.localStorage.setItem("userEmail", data.email);
+        setTimeout(() => {
+          router.push("/verify");
+          form.reset();
+        }, 2000);
+      }else{
+        toast.error(res.data.message || "❌ Registration failed. Please try again.");
+        
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Registration failed. Please try again.");
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle registration logic here
-    console.log("Individual Registration:", formData);
-    router.push("/verify");
-  };
-console.log(img);
+
 
   return (
     <div className="max-h-screen bg-white flex">
@@ -88,154 +125,192 @@ console.log(img);
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* First Name & Last Name */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  First name
-                </label>
-                <Input
-                  type="text"
-                  name="firstName"
-                  placeholder="John"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="bg-gray-100 border-gray-200"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Last name
-                </label>
-                <Input
-                  type="text"
-                  name="lastName"
-                  placeholder="Doe"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="bg-gray-100 border-gray-200"
-                />
-              </div>
-            </div>
+          <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Email field */}
+          <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>First name</FormLabel>
+                <FormControl>
+                  <Input className="h-11" placeholder="John" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Last name</FormLabel>
+                <FormControl>
+                  <Input className="h-11" placeholder="Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    className="h-11"
+                    placeholder="you@example.com"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* Gender & Date of Birth */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Gender
-                </label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      checked={formData.gender === "male"}
-                      onChange={handleChange}
-                      className="w-4 h-4"
+          <FormField
+            control={form.control}
+            name="phone_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone number</FormLabel>
+                <FormControl>
+                  <div className="text flex gap-2">
+                    <CountrySelect form={form} />
+                    <Input
+                      className="h-11"
+                      placeholder="070*******25"
+                      {...field}
                     />
-                    <span className="text-sm text-gray-700">Male</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      checked={formData.gender === "female"}
-                      onChange={handleChange}
-                      className="w-4 h-4"
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="date_of_birth"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Date of Birth</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "pl-3 text-left font-normal h-11",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-2" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      month={month}
+                      onMonthChange={setMonth}
+                      captionLayout="dropdown"
+                      fromYear={1900}
+                      toYear={new Date().getFullYear()}
+                      initialFocus
                     />
-                    <span className="text-sm text-gray-700">Female</span>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Date of birth
-                </label>
-                <Input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                  className="bg-gray-100 border-gray-200"
-                />
-              </div>
-            </div>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Phone number
-              </label>
-              <div className="flex gap-2">
-                <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
-                  <span className="text-gray-700 font-medium">🇳🇬 +234</span>
-                </div>
-                <Input
-                  type="tel"
-                  name="phone"
-                  placeholder="7000000000"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="flex-1 bg-gray-100 border-gray-200"
-                />
-              </div>
-            </div>
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="py-6 w-full">
+                      <SelectValue placeholder="Select your gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {["Male", "Female", "Others"].map((gen, index) => (
+                        <SelectItem key={index} value={gen.toLowerCase()}>
+                          {gen}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="pin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flext justify-between">
+                  Password{" "}
+                  <button
+                    onClick={() => {
+                      passwordType === "password"
+                        ? setPasswordType("text")
+                        : setPasswordType("password");
+                    }}
+                    className="text cursor-pointer  "
+                  >
+                    {passwordType === "password" ? (
+                      <span className="text flex items-center gap-1">
+                        <PiEyeThin size={20} /> Show
+                      </span>
+                    ) : (
+                      <span className="text flex items-center gap-1">
+                        <PiEyeSlashThin size={20} /> Hide
+                      </span>
+                    )}
+                  </button>{" "}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    className="h-11"
+                    type={passwordType}
+                    placeholder="••••••••"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                E-mail
-              </label>
-              <Input
-                type="email"
-                name="email"
-                placeholder="lisa.watson@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                className="bg-gray-100 border-gray-200"
-              />
-            </div>
+          <Button
+            className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
+            type="submit"
+            disabled={loading}
+          >
+            {loading && <Loader className="animate-spin" />}
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Password
-              </label>
-              <Input
-                type="password"
-                name="password"
-                placeholder="••••••"
-                value={formData.password}
-                onChange={handleChange}
-                className="bg-gray-100 border-gray-200"
-              />
-            </div>
+            {loading ? "Submitting..." : "Submit"}
+          </Button>
+        </form>
+      </Form>
 
-            {/* Terms & Conditions */}
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                name="termsAccepted"
-                checked={formData.termsAccepted}
-                onChange={handleChange}
-                className="w-5 h-5 rounded border-gray-300 text-blue-600 mt-0.5"
-              />
-              <span className="text-sm text-gray-700">
-                I accept the terms and privacy policy
-              </span>
-            </label>
-
-            {/* Continue Button */}
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-full font-semibold"
-            >
-              Continue
-            </Button>
-          </form>
         </div>
       </div>
     </div>
