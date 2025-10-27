@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import img from "../../assets/images/image 1.png";
+import useFormHook from "@/hooks/use-form-hook";
+import clientApi from "@/lib/clientApi";
+import { toast } from "react-toastify";
 
 export default function EnterNewPassword() {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const { otpPhoneNumber, countryCode } = useFormHook();
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
+    phone_number: otpPhoneNumber || "",
     otp: "",
-    newPassword: "",
-    confirmPassword: "",
+    country_code: countryCode || "",
+    password: "",
+    confirm_password: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,11 +32,38 @@ export default function EnterNewPassword() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle password reset
-    console.log("Password reset:", formData);
-    router.push("/password-changed");
+    const payload = {
+      phone_number: otpPhoneNumber,
+      otp: formData.otp,
+      country_code: countryCode,
+      password: formData.password,
+    };
+
+    try {
+      setLoading(true);
+      const res = await clientApi.patch(`/reset_password`, payload);
+
+      console.log(res);
+      if (res.data.status) {
+        setLoading(false);
+        toast.success(res.data.message || "✅ Password changed successfully!");
+        setTimeout(() => {
+          router.push("/password-changed");
+        }, 2000);
+      } else {
+        setLoading(false);
+        toast.error(
+          res.data.message || "❌ Invalid credentials, please try again."
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      toast.error("❌ invalid credentials, please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -64,7 +98,8 @@ export default function EnterNewPassword() {
               Enter new PIN
             </h1>
             <p className="text-gray-600">
-              An OTP has been sent to <span className="font-semibold">07066198768</span>, enter
+              An OTP has been sent to{" "}
+              <span className="font-semibold">{otpPhoneNumber}</span>, enter
               token and new password below to continue.
             </p>
           </div>
@@ -94,9 +129,9 @@ export default function EnterNewPassword() {
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
-                  name="newPassword"
+                  name="password"
                   placeholder="••••••"
-                  value={formData.newPassword}
+                  value={formData.password}
                   onChange={handleChange}
                   className="bg-gray-100 border-gray-200 pr-10"
                   required
@@ -123,9 +158,9 @@ export default function EnterNewPassword() {
               <div className="relative">
                 <Input
                   type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
+                  name="confirm_password"
                   placeholder="••••••"
-                  value={formData.confirmPassword}
+                  value={formData.confirm_password}
                   onChange={handleChange}
                   className="bg-gray-100 border-gray-200 pr-10"
                   required
@@ -146,10 +181,13 @@ export default function EnterNewPassword() {
 
             {/* Change PIN Button */}
             <Button
+              className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-full font-semibold"
+              disabled={loading}
             >
-              Change PIN
+              {loading && <Loader className="animate-spin" />}
+
+              {loading ? "Submitting..." : "Change PIN"}
             </Button>
           </form>
         </div>
@@ -157,4 +195,3 @@ export default function EnterNewPassword() {
     </div>
   );
 }
-

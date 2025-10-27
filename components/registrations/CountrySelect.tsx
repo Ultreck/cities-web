@@ -13,7 +13,7 @@ import { UseFormReturn } from "react-hook-form";
 import CountryFlag from "@/lib/helper";
 import { userSchemaProps } from "./IndividualRegistration";
 
-export default function CountrySelect({form}: {form: UseFormReturn<userSchemaProps>}) {
+export default function CountrySelect({form}: {form: any}) {
   const [selected, setSelected] = useState<string>("");
   const { countries } = useFormHook();
 

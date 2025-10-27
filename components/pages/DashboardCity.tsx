@@ -62,7 +62,7 @@ const DashboardCity = () => {
   };
 
   return (
-    <div>
+    <div className="px-3 sm:px-0" >
       <div className="text flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold py-3 ">Dashboard</h2>
         <Link href="/n/create-post" className="text-white font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 px-5 py-3 hover:underline">

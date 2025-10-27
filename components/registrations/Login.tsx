@@ -1,32 +1,76 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import img from "../../assets/images/image 1.png";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/lib/formSchemas";
+import z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { PiEyeSlashThin, PiEyeThin } from "react-icons/pi";
+import CountrySelect from "./CountrySelect";
+import clientApi from "@/lib/clientApi";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setToken } from "@/redux/tokenSlice";
 
+export type UserLoginProps = z.infer<typeof loginSchema>;
 export default function Login() {
+  const [loading, setLoading] = useState(false);
+  const [passwordType, setPasswordType] = useState("password");
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    phone: "",
-    password: "",
+  const dispatch = useDispatch();
+  const form = useForm<UserLoginProps>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      phone_number: "",
+      pin: "",
+      country_code: "",
+    },
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const onSubmit = async (data: UserLoginProps) => {
+    try {
+      setLoading(true);
+      const res = await clientApi.post(`/login/`, data);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log("Login:", formData);
+      console.log(res);
+      const token = res.data.token;
+        Cookies.set("auth_token", token, { expires: 7 });
+        localStorage.setItem("auth_token", token);
+        dispatch(setToken({ token}));
+
+      if (res.data.status) {
+        setLoading(false);
+        toast.success(res.data.message || "✅ User logined successfully!");
+        setTimeout(() => {
+          router.push("/n");
+          form.reset();
+        }, 2000);
+      } else {
+        setLoading(false);
+        toast.error(
+          res.data.message || "❌ Invalid credentials, please try again."
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      toast.error("❌ invalid credentials, please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,86 +95,109 @@ export default function Login() {
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
               Welcome Back
             </h1>
-            <p className="text-gray-600">
-              Sign in to your account to continue
-            </p>
+            <p className="text-gray-600">Sign in to your account to continue</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Phone number
-              </label>
-              <div className="flex gap-2">
-                <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
-                  <span className="text-gray-700 font-medium">🇳🇬 +234</span>
-                </div>
-                <Input
-                  type="tel"
-                  name="phone"
-                  placeholder="7011111111"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="flex-1 bg-gray-100 border-gray-200"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Phone Number */}
+              <div>
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone number</FormLabel>
+                      <FormControl>
+                        <div className="text flex gap-2">
+                          <CountrySelect form={form} />
+                          <Input
+                            className="h-11"
+                            placeholder="070*******25"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="bg-gray-100 border-gray-200 pr-10"
+              {/* Password */}
+              <div>
+                <FormField
+                  control={form.control}
+                  name="pin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flext justify-between">
+                        Password{" "}
+                        <button
+                          onClick={() => {
+                            passwordType === "password"
+                              ? setPasswordType("text")
+                              : setPasswordType("password");
+                          }}
+                          className="text cursor-pointer  "
+                        >
+                          {passwordType === "password" ? (
+                            <span className="text flex items-center gap-1">
+                              <PiEyeThin size={20} /> Show
+                            </span>
+                          ) : (
+                            <span className="text flex items-center gap-1">
+                              <PiEyeSlashThin size={20} /> Hide
+                            </span>
+                          )}
+                        </button>{" "}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          className="h-11"
+                          type={passwordType}
+                          placeholder="••••••••"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+              </div>
+
+              {/* Remember Me & Forgot Password */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="w-5 h-5 rounded border-gray-300 text-blue-600"
+                  />
+                  <span className="text-sm text-gray-700">
+                    Keep me logged in
+                  </span>
+                </label>
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  onClick={() => router.push("/forgot-password")}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  Forgot password?
                 </button>
               </div>
-            </div>
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5 rounded border-gray-300 text-blue-600"
-                />
-                <span className="text-sm text-gray-700">Keep me logged in</span>
-              </label>
-              <button
-                type="button"
-                onClick={() => router.push('/forgot-password')}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              {/* Login Button */}
+              <Button
+                className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
+                type="submit"
+                disabled={loading}
               >
-                Forgot password?
-              </button>
-            </div>
+                {loading && <Loader className="animate-spin" />}
 
-            {/* Login Button */}
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-full font-semibold"
-            >
-              Login
-            </Button>
-          </form>
+                {loading ? "Submitting..." : "Login"}
+              </Button>
+            </form>
+          </Form>
 
           {/* Sign Up Link */}
           <div className="mt-8 text-center">
@@ -156,4 +223,3 @@ export default function Login() {
     </div>
   );
 }
-

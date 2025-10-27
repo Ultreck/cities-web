@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import clientApi from "@/lib/clientApi";
 import useFormHook from "@/hooks/use-form-hook";
@@ -12,7 +12,8 @@ export default function VerifyAccount() {
   const router = useRouter();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
-  const { otpEmail, otpPhoneNumber } = useFormHook();
+  const [isResending, setIsResending] = useState(false);
+  const { otpPhoneNumber } = useFormHook();
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return;
     const newOtp = [...otp];
@@ -42,8 +43,6 @@ export default function VerifyAccount() {
     console.log("OTP Verification:", otpCode);
     setLoading(true);
 
-
-    
     if (typeof otpCode !== "number" || isNaN(otpCode)) {
       setTimeout(() => {
         setLoading(false);
@@ -54,7 +53,7 @@ export default function VerifyAccount() {
       otp: String(otpCode),
     };
     console.log(data);
-    
+
     const response = await clientApi.post(
       "/register/account_verification",
       data
@@ -66,6 +65,25 @@ export default function VerifyAccount() {
     } else {
       setOtp(["", "", "", "", "", ""]);
       toast.error(response.data.message || "Otp verification process failed");
+    }
+  };
+  const handleOTPResent = async () => {
+    setIsResending(true);
+    const data = {
+      identity: otpPhoneNumber,
+    };
+    console.log(data);
+
+    const response = await clientApi.post(
+      "/register/resend_verification_code",
+      data
+    );
+    console.log(response.data.status);
+    if (response.data.status) {
+      setIsResending(false);
+      toast.success(response.data.message || "✅ OTP resent successfully!");
+    } else {
+      toast.error(response.data.message || "Otp resent process failed");
     }
   };
 
@@ -89,6 +107,10 @@ export default function VerifyAccount() {
             <p className="text-gray-600">
               A 6 digit OTP code has been sent to your phone number or email
               address. enter the code below to verify your account
+            </p>
+            <p className="text-center mt-5">
+              Otp sent to{" "}
+              <span className="text-black font-semibold">{otpPhoneNumber}</span>
             </p>
           </div>
 
@@ -118,19 +140,29 @@ export default function VerifyAccount() {
             {/* Resend OTP */}
             <div className="text-center">
               <button
+                onClick={handleOTPResent}
                 type="button"
                 className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
-                Resent OTP
+                {isResending ? (
+                  <span className="text flex items-center">
+                    <Loader className="animate-spin" /> Resending...
+                  </span>
+                ) : (
+                  <span className="text"> Resent OTP</span>
+                )}
               </button>
             </div>
 
             {/* Verify Button */}
             <Button
+              className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-full font-semibold"
+              disabled={loading}
             >
-              Verify
+              {loading && <Loader className="animate-spin" />}
+
+              {loading ? "Verifying..." : "Verify"}
             </Button>
           </form>
         </div>

@@ -1,21 +1,67 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import img from "../../assets/images/image 3.png"
+import img from "../../assets/images/image 3.png";
+import { resetPasswordSchema } from "@/lib/formSchemas";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import clientApi from "@/lib/clientApi";
+import { toast } from "react-toastify";
+import CountrySelect from "./CountrySelect";
 
+export type ResetPasswordProps = z.infer<typeof resetPasswordSchema>;
 export default function ForgotPasswordPhone() {
-    const router = useRouter();
-  const [phone, setPhone] = useState("");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const form = useForm<ResetPasswordProps>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      phone_number: "",
+      country_code: "",
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle phone verification
-    console.log("Phone verification:", phone);
-    router.push("/security-question");
+  const onSubmit = async (data: ResetPasswordProps) => {
+    try {
+      setLoading(true);
+      const res = await clientApi.post(`/forgot_password`, data);
+
+      console.log(res);
+
+      if (res.data.status) {
+        setLoading(false);
+        toast.success(res.data.message || "✅ Details taken!");
+        window.localStorage.setItem("userPhoneNumber", data.phone_number);
+        window.localStorage.setItem("userCountryCode", data.country_code);
+        setTimeout(() => {
+          router.push("/security-question");
+          form.reset();
+        }, 2000);
+      } else {
+        setLoading(false);
+        toast.error(
+          res.data.message || "❌ Invalid credentials, please try again."
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      toast.error("❌ invalid credentials, please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,38 +101,45 @@ export default function ForgotPasswordPhone() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Phone Number */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Phone number
-              </label>
-              <div className="flex gap-2">
-                <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
-                  <span className="text-gray-700 font-medium">🇳🇬 +234</span>
-                </div>
-                <Input
-                  type="tel"
-                  placeholder="7066198768"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="flex-1 bg-gray-100 border-gray-200"
-                  required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div>
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone number</FormLabel>
+                      <FormControl>
+                        <div className="text flex gap-2">
+                          <CountrySelect form={form} />
+                          <Input
+                            className="h-11"
+                            placeholder="070*******25"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            </div>
+              {/* Login Button */}
+              <Button
+                className="bg-[#3561D3] cursor-pointer hover:bg-[#3561D3] w-full h-14 "
+                type="submit"
+                disabled={loading}
+              >
+                {loading && <Loader className="animate-spin" />}
 
-            {/* Continue Button */}
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg rounded-full font-semibold"
-            >
-              Continue
-            </Button>
-          </form>
+                {loading ? "Submitting..." : "Login"}
+              </Button>
+            </form>
+          </Form>
+          {/* Phone Number */}
         </div>
       </div>
     </div>
   );
 }
-

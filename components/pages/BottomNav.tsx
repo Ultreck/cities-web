@@ -1,33 +1,11 @@
-"use client";
-
+import { Gift, Home, Settings, ShoppingBag, User, Wallet } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { Badge } from "../ui/badge";
-import {
-  Home,
-  Users,
-  ShoppingBag,
-  Gift,
-  Bell,
-  MessageSquare,
-  MapPin,
-  TrendingUp,
-  Calendar,
-  Briefcase,
-  Building2,
-  User,
-  Settings,
-  Send,
-  DollarSign,
-  Menu,
-  X,
-  Wallet,
-} from "lucide-react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { Item } from "@radix-ui/react-accordion";
 
-const SideNavbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const BottomNav = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
   const navItems = [
@@ -53,14 +31,14 @@ const SideNavbar = () => {
   }) => (
     <Link
       href={href}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all relative ${
+      className={`flex flex-col items-center gap-1 px-2 py-2 rounded-lg transition-all relative ${
         active
           ? "bg-blue-600 text-primary-foreground shadow-sm"
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
       <Icon className="w-5 h-5" />
-      <span className="font-medium hidden lg:inline">{label}</span>
+      <span className="font-medium text-xs">{label}</span>
       {badge > 0 && (
         <Badge
           variant="destructive"
@@ -72,21 +50,16 @@ const SideNavbar = () => {
     </Link>
   );
   return (
-    <div className="w-full sticky top-0 lg:border-r h-full pt-10">
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        ></div>
-      )}
+    <div className="w-full sticky w-full bottom-0 lg:border-r h-full pt-10">
+      
       <aside
         className={`
-            fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] bg-background z-40
-             p-4 space-y-2
-            transition-transform duration-300 ease-in-out
-            ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0 
-          `}
+             fixed lg:sticky bottom-0 w-full items-center flex justify-between border-t bg-background z-40
+              p-4 space-y-2
+             transition-transform duration-300 ease-in-out
+             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+             lg:-translate-x-full
+           `}
       >
         {navItems.map((item) => (
           <NavItem
@@ -99,7 +72,7 @@ const SideNavbar = () => {
           />
         ))}
 
-        <div className="pt-6 mt-6 border-t space-y-2">
+        {/* <div className="flex space-y-2">
           {[
             { label: "Profile", href: "/n/profile", icon: User },
             { label: "Settings", href: "/n/settings", icon: Settings },
@@ -113,10 +86,9 @@ const SideNavbar = () => {
               active={pathname === sub.href}
             />
           ))}
-        </div>
+        </div> */}
       </aside>
     </div>
   );
 };
-
-export default SideNavbar;
+export default BottomNav;

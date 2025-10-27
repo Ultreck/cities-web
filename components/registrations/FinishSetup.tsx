@@ -27,6 +27,7 @@ import useParamHook from "@/hooks/use-param-hook";
 import clientApi from "@/lib/clientApi";
 import { toast } from "react-toastify";
 import { SlSettings } from "react-icons/sl";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   identity: z.string().nonempty("User identity is required"),
@@ -50,7 +51,8 @@ const formSchema = z.object({
 export default function FinishSetup() {
   const [isLoading, setisLoading] = useState<boolean>(false);
   const { otpPhoneNumber, otpEmail } = useFormHook();
-  const { handleSearchParams, router } = useParamHook();
+  const { handleSearchParams } = useParamHook();
+  const router = useRouter();
   const [isVerified, setIsVerified] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,20 +80,23 @@ export default function FinishSetup() {
       identity: otpEmail,
       user_name: form.watch("user_name"),
     };
-    if (form.watch("user_name")) {
-      setIsVerified(true);
-      const response = clientApi.post(`/register/username_suggestion`, data);
-      response
-        .then((res) => {
-          toast.success(res.data.message);
-          setIsVerified(false);
-          console.log(res);
-        })
-        .catch((err) => {
-          setIsVerified(false);
-          console.log(err);
-        });
-    }
+    const timeInterval = setTimeout(() =>{
+      if (form.watch("user_name")) {
+        setIsVerified(true);
+        const response = clientApi.post(`/register/username_suggestion`, data);
+        response
+          .then((res) => {
+            toast.success(res.data.message);
+            setIsVerified(false);
+            console.log(res);
+          })
+          .catch((err) => {
+            setIsVerified(false);
+            console.log(err);
+          });
+      }
+    }, 2000);
+    return () => clearTimeout(timeInterval);
   }, [form.watch("user_name")]);
 
   useEffect(() => {
@@ -117,12 +122,13 @@ export default function FinishSetup() {
       `/register/complete_registration`,
       dataValue
     );
+    
     if (res.data.status) {
       setisLoading(false);
-      router.push('/n');
       toast.success(res.data.message || "Account setup is successful");
       handleSearchParams("lagos Account setup is successful", "is_success");
       form.reset();
+      router.push('/login');
     } else {
       toast.error(res.data.message || "Account setup is successful");
       setisLoading(false);
