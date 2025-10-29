@@ -100,20 +100,23 @@ const CommentsDailog = ({
       });
   };
 
-  
   const fetchPostComments = useCallback(async () => {
     try {
-      const res = await clientApi.get(`/post/comments/?post_id=${post.post_id}`);
-      console.log(res.data.comments);
+      const res = await clientApi.get(
+        `/post/comments/?post_id=${post.post_id}`
+      );
+      setCommentsDatas(res.data.comments);
     } catch (error) {
-       console.error("Error fetching post comments:", error);
+      console.error("Error fetching post comments:", error);
     }
   }, []);
 
   useEffect(() => {
-   fetchPostComments();
-  }, [fetchPostComments]);
+    fetchPostComments();
+  }, [fetchPostComments, postComments]);
 
+  console.log(post);
+  
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -176,7 +179,7 @@ const CommentsDailog = ({
                 />
               )}
 
-              <div className="flex items-center justify-between pt-4 border-t">
+              <div className="flex items-center justify-between py-2 border-t">
                 <Button
                   variant={isLiked ? "default" : "ghost"}
                   size="sm"
@@ -248,16 +251,23 @@ const CommentsDailog = ({
                   <RiSendPlaneFill className="text-white" size={20} />
                 </button>
               </div>
-              {comments.map((co) => (
-                <div key={co.id}>
+              {commentsDatas.map((co) => (
+                <div key={co.unique_id}>
                   <div className="flex gap-3 my-5 flex-1">
                     <Avatar>
-                      <AvatarImage src={co.avatar} alt={co.author} />
-                      <AvatarFallback>{co.author.charAt(0)}</AvatarFallback>
+                      <AvatarImage
+                        src={co.User.profile_pic}
+                        alt={co.User.first_name}
+                      />
+                      <AvatarFallback>
+                        {co.User.first_name.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <CardTitle className="text-base">{co.author}</CardTitle>
+                        <CardTitle className="text-base">
+                          {co.User.first_name}
+                        </CardTitle>
                         {/* {post.sponsored && (
                           <Badge variant="secondary" className="text-xs">
                             Sponsored
@@ -265,7 +275,7 @@ const CommentsDailog = ({
                         )} */}
                       </div>
                       <CardDescription className="flex items-center gap-2">
-                        {co.username} • {co.time}
+                        {co.User.user_name} • {formatPostTime(co.createdAt)}
                       </CardDescription>
                       <div className="text flex justify-between">
                         <p className="text">{co?.content}</p>
@@ -273,7 +283,7 @@ const CommentsDailog = ({
                       </div>
                     </div>
                   </div>
-                  {co.replies.length > 0 &&
+                  {/* {co.length > 0 &&
                     co.replies.map((rep) => (
                       <div key={rep.id} className="text ml-10">
                         <div className="flex gap-3 my-5 flex-1">
@@ -288,11 +298,6 @@ const CommentsDailog = ({
                               <CardTitle className="text-base">
                                 {rep.author}
                               </CardTitle>
-                              {/* {post.sponsored && (
-                                <Badge variant="secondary" className="text-xs">
-                                  Sponsored
-                                </Badge>
-                              )} */}
                             </div>
                             <CardDescription className="flex items-center gap-2">
                               {rep.username} • {rep.time}
@@ -321,14 +326,6 @@ const CommentsDailog = ({
                                     <CardTitle className="text-base">
                                       {subrep.author}
                                     </CardTitle>
-                                    {/* {post.sponsored && (
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-xs"
-                                      >
-                                        Sponsored
-                                      </Badge>
-                                    )} */}
                                   </div>
                                   <CardDescription className="flex items-center gap-2">
                                     {subrep.username} • {subrep.time}
@@ -342,7 +339,7 @@ const CommentsDailog = ({
                             </div>
                           ))}
                       </div>
-                    ))}
+                    ))} */}
                 </div>
               ))}
             </ScrollArea>

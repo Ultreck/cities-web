@@ -21,10 +21,36 @@ const usePostHook = () => {
     fetchPosts();
   }, [fetchPosts, trigger]);
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
+  const handleRepost = async (id: string, aud: string) => {
+    const data = {
+      post_id: id,
+      audience: aud,
+    };
+    try {
+      const res = await clientApi.post(`/post/repost`, data);
+      console.log("Reposted:", res.data);
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.post_id === id
+            ? {
+                ...p,
+                Post: {
+                  ...p.Post,
+                  isLiked: !p.Post.isLike,
+                  reactions_count: p.Post.isLike
+                    ? p.Post.reactionscount - 1
+                    : p.Post.reactionscount + 1,
+                },
+              }
+            : p
+        )
+      );
+    } catch (err) {
+      console.error("Error liking post:", err);
+    }
+  };
   const handlePostLikes = async (id: string) => {
     try {
       const res = await clientApi.post(`/post/react`, { post_id: id });
