@@ -37,7 +37,7 @@ export function NotificationsPage() {
   setNotifications(initialNotifications);
   }, []);
   
-  const getIcon = (type: any) => {
+  const getIcon = (type: string) => {
     switch (type) {
       case "like":
         return <Heart className="w-5 h-5 text-red-500" />;
@@ -54,12 +54,12 @@ export function NotificationsPage() {
     }
   };
 
-  const markAsRead = (id: any) => {
-    setNotifications((prev: any) =>
-      prev.map((notif: any) =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
-    );
+  const markAsRead = (id: number) => {
+    // setNotifications((prev: any) =>
+    //   prev.map((notif: any) =>
+    //     notif.id === id ? { ...notif, read: true } : notif
+    //   )
+    // );
   };
 
   const markAllAsRead = () => {

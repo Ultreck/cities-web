@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { MapPin, DollarSign, Bed, Bath, Heart } from 'lucide-react';
+import { MapPin, Bed, Bath, Heart } from 'lucide-react';
 
 interface PropertyCardProps {
   id: string;

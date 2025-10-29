@@ -80,14 +80,14 @@ export function SearchBar({ placeholder = "Search...", onSearch, data = [] }: {p
                 className="w-full text-left p-3 hover:bg-accent rounded-lg transition-colors"
                 onClick={() => handleSelect(item)}
               >
-                <div className="font-medium text-sm">
+                {/* <div className="font-medium text-sm">
                   {item.name || item.title || item.author}
                 </div>
                 {(item.username || item.content) && (
                   <div className="text-xs text-muted-foreground truncate">
                     {item.username || item.content}
                   </div>
-                )}
+                )} */}
               </button>
             ))}
           </CardContent>

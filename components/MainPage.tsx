@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,7 +38,6 @@ import {
   initialJobs,
   initialMessages,
   initialNotifications,
-  initialPosts,
   initialProperties,
 } from "@/lib/helper";
 import { SearchBar } from "./SearchBar";
@@ -48,6 +46,8 @@ import { NotificationsPage } from "./pages/NotificationsPage";
 import { MessagesPage } from "./pages/MessagesPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
+import usePostHook from "@/hooks/use-post-hook";
+import { RePostType } from "@/types/type-props";
 // import { NotificationsPage } from "./pages/NotificationsPage";
 // import { MessagesPage } from "./pages/MessagesPage";
 // import { ProfilePage } from "./ProfilePage";
@@ -58,46 +58,44 @@ function MainPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // State management
-  const [posts, setPosts] = useState(initialPosts);
+  // const [posts, setPosts] = useState(initialPosts);
+
   const [communities, setCommunities] = useState(initialCommunities);
-  const [notifications, setNotifications] = useState(initialNotifications);
-  const [messages, setMessages] = useState(initialMessages);
+  const [notifications, _setNotifications] = useState(initialNotifications);
+  const [messages, _setMessages] = useState(initialMessages);
+  const { handlePostLikes, handleRepost, posts } = usePostHook();
 
   const unreadNotifications = notifications.filter((n) => !n.read).length;
   const unreadMessages = messages.reduce((sum, msg) => sum + msg.unread, 0);
 
   // Search data - combine all searchable items
-  const searchData = [
-    ...posts.map((p) => ({ ...p, type: "post" })),
-    ...communities.map((c) => ({ ...c, type: "community" })),
-    ...initialJobs.map((j) => ({ ...j, type: "job" })),
-  ];
+  const searchData = [...posts.map((p) => ({ ...p, type: "post" }))];
 
-  const handleSearch = (item: any) => {
+  const handleSearch = (item: RePostType) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
-    if (item.type === "community") {
-      setActiveTab("community");
-    } else if (item.type === "job") {
-      setActiveTab("forsale");
-    }
+    // if (item.type === "community") {
+    //   setActiveTab("community");
+    // } else if (item.type === "job") {
+    //   setActiveTab("forsale");
+    // }
   };
 
-  const handleLike = (postId: any, liked: boolean) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              likedByUser: liked,
-              likes: liked ? post.likes + 1 : post.likes - 1,
-            }
-          : post
-      )
-    );
+  const handleLike = (postId: string, liked: boolean) => {
+    // setPosts((prev) =>
+    //   prev.map((post) =>
+    //     post.id === postId
+    //       ? {
+    //           ...post,
+    //           likedByUser: liked,
+    //           likes: liked ? post.likes + 1 : post.likes - 1,
+    //         }
+    //       : post
+    //   )
+    // );
   };
 
-  const handleJoinCommunity = (communityId: any) => {
+  const handleJoinCommunity = (communityId: string | number) => {
     setCommunities((prev) =>
       prev.map((comm) =>
         comm.id === communityId ? { ...comm, joined: !comm.joined } : comm
@@ -106,17 +104,17 @@ function MainPage() {
   };
 
   const NavItem = ({
-    icon: Icon,
+    icon,
     label,
     active,
     onClick,
     badge,
   }: {
-    icon: any;
+    icon: React.ReactNode;
     label: string;
-    active: any;
-    onClick: any;
-    badge: any;
+    active: string | boolean;
+    onClick: () => void;
+    badge: number;
   }) => (
     <button
       onClick={onClick}
@@ -126,7 +124,8 @@ function MainPage() {
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
-      <Icon className="w-5 h-5" />
+      {/* <Icon className="w-5 h-5" /> */}
+      {icon}
       <span className="font-medium hidden lg:inline">{label}</span>
       {badge > 0 && (
         <Badge
@@ -222,8 +221,8 @@ function MainPage() {
           `}
           >
             <NavItem
-              icon={Home}
-              badge={""}
+              icon={<Home />}
+              badge={0}
               label="Home"
               active={activeTab === "home"}
               onClick={() => {
@@ -232,8 +231,8 @@ function MainPage() {
               }}
             />
             <NavItem
-              badge={""}
-              icon={Users}
+              badge={0}
+              icon={<Users />}
               label="Community"
               active={activeTab === "community"}
               onClick={() => {
@@ -242,9 +241,9 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={ShoppingBag}
+              icon={<ShoppingBag />}
               label="For Sale"
-              badge={""}
+              badge={0}
               active={activeTab === "forsale"}
               onClick={() => {
                 setActiveTab("forsale");
@@ -252,8 +251,8 @@ function MainPage() {
               }}
             />
             <NavItem
-              badge={""}
-              icon={Gift}
+              badge={0}
+              icon={<Gift />}
               label="Rewards"
               active={activeTab === "rewards"}
               onClick={() => {
@@ -262,7 +261,7 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={Bell}
+              icon={<Bell />}
               label="Notifications"
               active={activeTab === "notifications"}
               badge={unreadNotifications}
@@ -272,7 +271,7 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={MessageSquare}
+              icon={<MessageSquare />}
               label="Messages"
               active={activeTab === "messages"}
               badge={unreadMessages}
@@ -284,8 +283,8 @@ function MainPage() {
 
             <div className="pt-6 mt-6 border-t space-y-2">
               <NavItem
-                badge={""}
-                icon={User}
+                badge={0}
+                icon={<User />}
                 label="Profile"
                 active={activeTab === "profile"}
                 onClick={() => {
@@ -294,8 +293,8 @@ function MainPage() {
                 }}
               />
               <NavItem
-                badge={""}
-                icon={Settings}
+                badge={0}
+                icon={<Settings />}
                 label="Settings"
                 active={activeTab === "settings"}
                 onClick={() => {
@@ -339,7 +338,13 @@ function MainPage() {
 
                   {/* Posts Feed */}
                   {posts.map((post) => (
-                    <PostCard key={post.id} post={post} onLike={handleLike} />
+                    <PostCard
+                      key={post.post_id}
+                      handlePostLikes={handlePostLikes}
+                      handleRepost={handleRepost}
+                      post={post}
+                      // onLike={handleLike}
+                    />
                   ))}
                 </div>
 
@@ -687,7 +692,7 @@ function MainPage() {
 
             {/* Notifications Tab */}
             {activeTab === "notifications" && (
-              <NotificationsPage notifications={notifications} />
+              <NotificationsPage  />
             )}
 
             {/* Messages Tab */}

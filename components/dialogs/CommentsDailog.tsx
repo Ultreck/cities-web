@@ -10,20 +10,16 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { CardDescription, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Post } from "../PostCard";
 import { commentsData } from "@/lib/helper";
 import { IoIosArrowBack } from "react-icons/io";
 import { ScrollArea } from "../ui/scroll-area";
 import { MdFavorite } from "react-icons/md";
-import Image from "next/image";
 import { Button } from "../ui/button";
 import { Eye, Share2, ThumbsUp } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { Input } from "../ui/input";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useRouter } from "next/navigation";
 import { CommentType, RePostType } from "@/types/type-props";
 import PostMedia from "../PostMedia";
 import clientApi from "@/lib/clientApi";
@@ -40,8 +36,8 @@ const CommentsDailog = ({
   const [postComments, setPostComments] = useState<string | undefined>("");
   const [commentsDatas, setCommentsDatas] = useState<CommentType[] | []>([]);
   const [replyComments, setreplyComments] = useState<string | undefined>("");
-  const [isLiked, setIsLiked] = useState(post.Post.isLike);
-  const [likes, setLikes] = useState(post.Post.reactionscount);
+  const [isLiked, _setIsLiked] = useState(post.Post.isLike);
+  const [likes, _setLikes] = useState(post.Post.reactionscount);
   const [showComments, setShowComments] = useState(false);
   const [commentIndex, setCommentIndex] = useState<string | undefined>("");
   // const router = useRouter();
@@ -49,7 +45,7 @@ const CommentsDailog = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleLike = () => {
-    const newLikedState = !isLiked;
+    // const newLikedState = !isLiked;
     // setIsLiked(newLikedState);
     // setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
     //   if (onLike) onLike(post.id, newLikedState);
@@ -72,7 +68,7 @@ const CommentsDailog = ({
     return num.toString();
   };
 
-  const handleChanges = (e: any) => {
+  const handleChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setPostComments(e.target.value);
     console.log(e.target.value);
   };
@@ -119,7 +115,7 @@ const CommentsDailog = ({
     fetchPostComments();
   }, [fetchPostComments, postComments]);
 
-  const handleReplyChanges = (e: any) => {
+  const handleReplyChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setreplyComments(e.target.value);
     console.log(e.target.value);
   };
@@ -136,23 +132,23 @@ const CommentsDailog = ({
   };
 
   const subComment = (id: string) => {
-    const [repl, setrepl] = useState(second)
+    // const [reply, setReply] = useState()
     return (
       <div key={id} className="text ml-10">
         <div className="flex gap-3 my-5 flex-1">
           <Avatar>
-            <AvatarImage src={rep.avatar} alt={rep.author} />
-            <AvatarFallback>{rep.author.charAt(0)}</AvatarFallback>
+            {/* <AvatarImage src={rep.avatar} alt={rep.author} /> */}
+            {/* <AvatarFallback>{rep.author.charAt(0)}</AvatarFallback> */}
           </Avatar>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <CardTitle className="text-base">{rep.author}</CardTitle>
+              {/* <CardTitle className="text-base">{rep.author}</CardTitle> */}
             </div>
             <CardDescription className="flex items-center gap-2">
-              {rep.username} • {rep.time}
+              {/* {rep.username} • {rep.time} */}
             </CardDescription>
             <div className="text flex justify-between">
-              <p className="text">{rep?.content}</p>
+              {/* <p className="text">{rep?.content}</p> */}
               <MdFavorite size={20} />
             </div>
           </div>

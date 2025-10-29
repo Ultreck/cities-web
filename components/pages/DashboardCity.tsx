@@ -67,17 +67,17 @@ const DashboardCity = () => {
     ...communities.map((c) => ({ ...c, type: "community" })),
     ...initialJobs.map((j) => ({ ...j, type: "job" })),
   ];
-  const handleSearch = (item: any) => {
+  const handleSearch = (item: RePostType) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
-    if (item.type === "community") {
-      //   setActiveTab("community");
-    } else if (item.type === "job") {
-      //   setActiveTab("forsale");
-    }
+    // if (item.type === "community") {
+    //   //   setActiveTab("community");
+    // } else if (item.type === "job") {
+    //   //   setActiveTab("forsale");
+    // }
   };
 
-  const handleLike = (postId: any, liked: boolean) => {
+  const handleLike = (postId: string, liked: boolean) => {
     // setPosts((prev) =>
     //   prev.map((post) =>
     //     post.id === postId
@@ -91,7 +91,7 @@ const DashboardCity = () => {
     // );
   };
 
-  const handleJoinCommunity = (communityId: any) => {
+  const handleJoinCommunity = (communityId: number) => {
     setCommunities((prev) =>
       prev.map((comm) =>
         comm.id === communityId ? { ...comm, joined: !comm.joined } : comm
@@ -123,7 +123,7 @@ const DashboardCity = () => {
 
           {/* Posts Feed */}
           {posts.map((post) => (
-            <PostCard key={post.unique_id} handleRepost={handleRepost} post={post} handlePostLikes={handlePostLikes} onLike={handleLike} />
+            <PostCard key={post.unique_id} handleRepost={handleRepost} post={post} handlePostLikes={handlePostLikes} />
           ))}
         </div>
 

@@ -17,16 +17,17 @@ const BottomNav = () => {
     // { label: "Rewards", icon: Gift, href: "/n/rewards" },
   ];
   const NavItem = ({
-    icon: Icon,
+    icon,
     label,
     active,
     badge,
     href,
   }: {
-    icon: any;
+    icon: React.ReactNode;
     label: string;
-    active: any;
-    badge: any;
+    active: string | boolean;
+    onClick?: () => void;
+    badge: number;
     href: string;
   }) => (
     <Link
@@ -37,7 +38,7 @@ const BottomNav = () => {
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
-      <Icon className="w-5 h-5" />
+      {icon} 
       <span className="font-medium text-xs">{label}</span>
       {badge > 0 && (
         <Badge
@@ -51,7 +52,6 @@ const BottomNav = () => {
   );
   return (
     <div className="w-full sticky w-full bottom-0 lg:border-r h-full pt-10">
-      
       <aside
         className={`
              fixed lg:sticky bottom-0 w-full items-center flex justify-between border-t bg-background z-40
@@ -64,8 +64,9 @@ const BottomNav = () => {
         {navItems.map((item) => (
           <NavItem
             key={item.label}
-            badge={""}
-            icon={item.icon}
+            badge={0}
+
+            icon={<item.icon/>}
             href={item.href}
             label={item.label}
             active={pathname === item.href}

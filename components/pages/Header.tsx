@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { selectUserDetails } from "@/redux/selectors";
+import { RePostType } from "@/types/type-props";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,14 +33,14 @@ const Header = () => {
     ...initialJobs.map((j) => ({ ...j, type: "job" })),
   ];
 
-  const handleSearch = (item: any) => {
+  const handleSearch = (item: RePostType) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
-    if (item.type === "community") {
-      //   setActiveTab("community");
-    } else if (item.type === "job") {
-      //   setActiveTab("forsale");
-    }
+    // if (item.type === "community") {
+    //   //   setActiveTab("community");
+    // } else if (item.type === "job") {
+    //   //   setActiveTab("forsale");
+    // }
   };
   return (
     <div>

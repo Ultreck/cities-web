@@ -1,9 +1,6 @@
 'use client';
 
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Calendar, Briefcase, Store, Globe, Home, Settings, Ban } from "lucide-react";
 import CommunityProfile from "./CommunityProfile";
 import Events from "./Events";
