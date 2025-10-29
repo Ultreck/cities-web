@@ -11,15 +11,18 @@ import {
   initialNotifications,
   initialPosts,
 } from "@/lib/helper";
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { selectUserDetails } from "@/redux/selectors";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [posts, setPosts] = useState(initialPosts);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [messages, setMessages] = useState(initialMessages);
+    const details = useSelector(selectUserDetails);
+    
 
   const unreadNotifications = notifications.filter((n) => !n.read).length;
   const unreadMessages = messages.reduce((sum, msg) => sum + msg.unread, 0);
@@ -80,6 +83,7 @@ const Header = () => {
               )}
             </Link>
             <Avatar className="w-8 h-8 cursor-pointer">
+               <AvatarImage src={details?.profilePicture.media} />
               <AvatarFallback>{currentUser.avatar}</AvatarFallback>
             </Avatar>
           </div>

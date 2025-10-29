@@ -24,6 +24,9 @@ import CommentsDailog from "./dialogs/CommentsDailog";
 import { AiOutlineComment } from "react-icons/ai";
 import RepostDialog from "./dialogs/RepostDialog";
 import Link from "next/link";
+import { RePostType } from "@/types/type-props";
+import PostMedia from "./PostMedia";
+import usePostHook from "@/hooks/use-post-hook";
 
 export interface Post {
   id: number;
@@ -43,31 +46,32 @@ export interface Post {
 }
 
 interface PostCardProps {
-  post: Post;
+  post: RePostType;
   onLike?: (id: number, liked: boolean) => void;
   onComment?: (id: number) => void;
   onShare?: (id: number) => void;
+  handlePostLikes?: (id: string) => void;
 }
 
-export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
-  const [isLiked, setIsLiked] = useState(post.likedByUser);
-  const [likes, setLikes] = useState(post.likes);
+export function PostCard({ post, onLike, onComment, onShare, handlePostLikes }: PostCardProps) {
+  const [isLiked, setIsLiked] = useState();
+  const [likes, setLikes] = useState();
   const [showComments, setShowComments] = useState(false);
 
-  const handleLike = () => {
-    const newLikedState = !isLiked;
-    setIsLiked(newLikedState);
-    setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
-    if (onLike) onLike(post.id, newLikedState);
-  };
+  // const handleLike = () => {
+  //   const newLikedState = !isLiked;
+  //   // setIsLiked(newLikedState);
+  //   // setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
+  //   // if (onLike) onLike(post.id, newLikedState);
+  // };
 
   const handleComment = () => {
     setShowComments(!showComments);
-    if (onComment) onComment(post.id);
+    // if (onComment) onComment(post.id);
   };
 
   const handleShare = () => {
-    if (onShare) onShare(post.id);
+    // if (onShare) onShare(post.id);
     // alert(`Sharing: ${post.title}`);
   };
 
@@ -77,27 +81,41 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
     }
     return num.toString();
   };
-
+  function formatPostTime(timestamp: string) {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
   return (
     <Card className="hover:shadow transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex gap-3 flex-1">
             <Avatar>
-              <AvatarImage src={post.avatar.src} alt={post.author} />
-              <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+              <AvatarImage
+                src={post?.User?.profile_pic}
+                alt={post.User.first_name}
+              />
+              <AvatarFallback>
+                {post?.User?.first_name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <CardTitle className="text-base">{post.author}</CardTitle>
-                {post.sponsored && (
+                <CardTitle className="text-base">
+                  {post?.User?.first_name}
+                </CardTitle>
+                {/* {post.sponsored && (
                   <Badge variant="secondary" className="text-xs">
                     Sponsored
                   </Badge>
-                )}
+                )} */}
               </div>
               <CardDescription className="flex items-center gap-2">
-                {post.username} • {post.time}
+                {post?.User?.first_name + " " + post?.User?.last_name} •{" "}
+                {formatPostTime(post.createdAt)}
               </CardDescription>
             </div>
           </div>
@@ -106,22 +124,14 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
 
       <CardContent className="space-y-2">
         <div>
-          <h3 className="font-semibold mb-2">{post.title}</h3>
-          <p className="text-sm text-muted-foreground">{post.content}</p>
+          {/* <h3 className="font-semibold mb-2">{post.Post.title}</h3> */}
+          <p className="text-sm text-muted-foreground">{post.Post.content}</p>
         </div>
 
-        {post.image && (
-          <div className="rounded-lg overflow-hidden">
-            <Image
-              src={post.image}
-              alt={post.title}
-              width={600}
-              height={400}
-              className="w-full h-auto"
-              placeholder="blur"
-            />
-          </div>
+        {post.Post.Media.length > 0 && (
+          <PostMedia mediaItems={post.Post.Media} />
         )}
+
         <div className="text flex items-center justify-between pt-2 border-t">
           <CommentsDailog post={post}>
             <Link
@@ -129,30 +139,30 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
               className="flex items-center gap-1 text-blue-600 hover:underline"
             >
               <span className="hidden sm:inline">
-                {formatNumber(post.comments)}
+                {formatNumber(post.Post.commentcount)}
               </span>
               <span className="hidden sm:inline">Comments</span>
             </Link>
           </CommentsDailog>
           <Link
-            href={`/n/${post.id}/post-engagement?type=likes`}
+            href={`/n/${post.post_id}/post-engagement?type=likes`}
             className="flex items-center gap-1 text-blue-600 hover:underline"
           >
-            <span className="">{formatNumber(likes)}</span>
+            <span className="">{formatNumber(post.Post.reactionscount)}</span>
             <span className="hidden sm:inline">Likes</span>
           </Link>
           <Link
             href={`#`}
             className="flex items-center gap-1 text-blue-600 hover:underline"
           >
-            <span className="">{formatNumber(post.shares)}</span>
+            <span className="">{formatNumber(post.Post.rePostCount)}</span>
             <span className="hidden sm:inline">Shares</span>
           </Link>
           <Link
-             href={`/n/${post.id}/post-engagement?type=views`}
+            href={`/n/${post.post_id}/post-engagement?type=views`}
             className="flex items-center gap-1 text-blue-600 hover:underline"
           >
-            <span className="">{formatNumber(post.views)}</span>
+            <span className="">{formatNumber(post.Post.views)}</span>
             <span className="hidden sm:inline">Views</span>
           </Link>
         </div>
@@ -171,12 +181,12 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
             </p>
           </CommentsDailog>
           <Button
-            variant={isLiked ? "default" : "ghost"}
+            variant={post.Post.isLike ? "default" : "ghost"}
             size="sm"
             className="flex items-center gap-2 transition-all"
-            onClick={handleLike}
+            onClick={() => handlePostLikes && handlePostLikes(post.post_id)}
           >
-            <ThumbsUp className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} />
+            <ThumbsUp className={`w-4 h-4 ${post.Post.isLike ? "fill-current" : ""}`} />
             <span className="hidden sm:inline">Likes</span>
           </Button>
 
@@ -192,7 +202,7 @@ export function PostCard({ post, onLike, onComment, onShare }: PostCardProps) {
             </Button>
           </RepostDialog>
 
-          <Button variant="ghost" size="sm" className="flex items-center gap-2">
+          <Button  variant={post.Post.isView ? "default" : "ghost"} size="sm" className="flex items-center gap-2">
             <Eye className="w-4 h-4" />
             <span className="hidden sm:inline">Views</span>
           </Button>

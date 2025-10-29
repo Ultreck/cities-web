@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 // import { useAuth } from "@/_core/hooks/useAuth";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 // import { trpc } from "@/lib/trpc";
 import { Globe, Lock, Users, X, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import clientApi from "@/lib/clientApi";
 
 type VisibilityType = "public" | "private" | "friends";
 
@@ -19,6 +20,8 @@ export default function CreatePost() {
   const [visibility, setVisibility] = useState<VisibilityType>("public");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  // const [files, setFiles] = useState<File[] | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   //   const createPostMutation = trpc.posts.create.useMutation({
   //     onSuccess: () => {
@@ -30,7 +33,8 @@ export default function CreatePost() {
   //   });
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+    const files = e.target.files ? Array.from(e.target.files) : null;
+    setFile(e.target.files?.[0] || null)
     if (files) {
       const newPreviews: string[] = [];
       Array.from(files).forEach((file) => {
@@ -53,10 +57,29 @@ export default function CreatePost() {
   };
 
   const handleSubmit = async () => {
-    if (!content.trim()) return;
+    console.log(file);
 
+    if (!content.trim()) return;
+    const formData = new FormData();
+    formData.append("content", content);
+    if (file) {
+    formData.append("file", file);
+  }
+    // if (files && files.length > 0) {
+    //   files.forEach((file) => {
+    //     formData.append("files", file);
+    //   });
+    // }
+    formData.append("audience", visibility);
     setIsSubmitting(true);
     try {
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+
+      const response = await clientApi.post("/post/create", formData);
+      console.log("Post created:", response);
+
       //   await createPostMutation.mutateAsync({
       //     content,
       //     images: previewImages,

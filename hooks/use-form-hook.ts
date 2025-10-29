@@ -53,7 +53,7 @@ const useFormHook = ({ cc = "NG", sc }: UseFormHookProps = {}) => {
   // Fetch all countries
   useEffect(() => {
     clientApi
-      .get("/states_and_coutries/countries")
+      .get("/user/states_and_coutries/countries")
       .then((res) => {
         setCountries(res.data.countries);
         const ng = res.data.countries.find(
@@ -68,7 +68,7 @@ const useFormHook = ({ cc = "NG", sc }: UseFormHookProps = {}) => {
   useEffect(() => {
     if (!cc) return;
     clientApi
-      .get(`/states_and_coutries/states?countryCode=${cc}`)
+      .get(`/user/states_and_coutries/states?countryCode=${cc}`)
       .then((res) => {
         setStates(res.data.states || []);
       })
@@ -88,7 +88,7 @@ const useFormHook = ({ cc = "NG", sc }: UseFormHookProps = {}) => {
 
     if (!code) return;
     clientApi
-      .get(`/states_and_coutries/cities?countryCode=${cc}&stateCode=${sc}`)
+      .get(`/user/states_and_coutries/cities?countryCode=${cc}&stateCode=${sc}`)
       .then((res) => {
         setCities(res.data.cities || []);
       })

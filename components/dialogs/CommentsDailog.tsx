@@ -19,31 +19,36 @@ import { MdFavorite } from "react-icons/md";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Eye, Share2, ThumbsUp } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { Input } from "../ui/input";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { useRouter } from "next/navigation";
+import { CommentType, RePostType } from "@/types/type-props";
+import PostMedia from "../PostMedia";
+import clientApi from "@/lib/clientApi";
+import { log } from "console";
 
 const CommentsDailog = ({
   children,
   post,
 }: {
   children: React.ReactNode;
-  post: Post;
+  post: RePostType;
 }) => {
   const comments = commentsData;
-  console.log(comments);
-  const [isLiked, setIsLiked] = useState(post.likedByUser);
-  const [likes, setLikes] = useState(post.likes);
+  const [postComments, setPostComments] = useState<string | undefined>("");
+  const [commentsDatas, setCommentsDatas] = useState<CommentType[] | []>([]);
+  const [isLiked, setIsLiked] = useState(post.Post.isLike);
+  const [likes, setLikes] = useState(post.Post.reactionscount);
   const [showComments, setShowComments] = useState(false);
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleLike = () => {
     const newLikedState = !isLiked;
-    setIsLiked(newLikedState);
-    setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
+    // setIsLiked(newLikedState);
+    // setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
     //   if (onLike) onLike(post.id, newLikedState);
   };
 
@@ -54,7 +59,7 @@ const CommentsDailog = ({
 
   const handleShare = () => {
     //   if (onShare) onShare(post.id);
-    alert(`Sharing: ${post.title}`);
+    // alert(`Sharing: ${post.title}`);
   };
 
   const formatNumber = (num: number) => {
@@ -65,8 +70,50 @@ const CommentsDailog = ({
   };
 
   const handleChanges = (e: any) => {
+    setPostComments(e.target.value);
     console.log(e.target.value);
   };
+
+  function formatPostTime(timestamp: string) {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  const handlePostComments = () => {
+    const data = {
+      content: postComments,
+      post_id: post.post_id,
+    };
+    const response = clientApi.post(`/post/comment`, data);
+    response
+      .then((res) => {
+        if (res.data.status) {
+          setPostComments("");
+        }
+        console.log("Respose for the comment flow", res);
+      })
+      .catch((err) => {
+        console.log("Error occurred..", err);
+      });
+  };
+
+  
+  const fetchPostComments = useCallback(async () => {
+    try {
+      const res = await clientApi.get(`/post/comments/?post_id=${post.post_id}`);
+      console.log(res.data.comments);
+    } catch (error) {
+       console.error("Error fetching post comments:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+   fetchPostComments();
+  }, [fetchPostComments]);
+
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -84,230 +131,222 @@ const CommentsDailog = ({
               View and add comments on this post.
             </DialogDescription>
           </DialogHeader>
-              <div className="">
-                <div className="text">
-                  <div className="flex items-start justify-between">
-                    <div className="flex gap-3 flex-1">
-                      <Avatar>
-                        <AvatarImage src={post.avatar.src} alt={post.author} />
-                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <CardTitle className="text-base">
-                            {post.author}
-                          </CardTitle>
-                          {post.sponsored && (
-                            <Badge variant="secondary" className="text-xs">
-                              Sponsored
-                            </Badge>
-                          )}
-                        </div>
-                        <CardDescription className="flex items-center gap-2">
-                          {post.username} • {post.time}
-                        </CardDescription>
-                      </div>
+          <div className="">
+            <div className="text">
+              <div className="flex items-start justify-between">
+                <div className="flex gap-3 flex-1">
+                  <Avatar>
+                    <AvatarImage
+                      src={post?.User?.profile_pic}
+                      alt={post.User.first_name}
+                    />
+                    <AvatarFallback>
+                      {post?.User?.first_name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <CardTitle className="text-base">
+                        {post.User.first_name}
+                      </CardTitle>
+                      {/* {post.sponsored && (
+                        <Badge variant="secondary" className="text-xs">
+                          Sponsored
+                        </Badge>
+                      )} */}
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">{post.title}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {post.content}
-                    </p>
-                  </div>
-
-                  {post.image && (
-                    <div className="rounded-lg overflow-hidden">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        width={600}
-                        height={300}
-                        className="w-full h-62"
-                        placeholder="blur"
-                      />
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <Button
-                      variant={isLiked ? "default" : "ghost"}
-                      size="sm"
-                      className="flex items-center gap-2 transition-all"
-                      onClick={handleLike}
-                    >
-                      <ThumbsUp
-                        className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`}
-                      />
-                      <span className="hidden sm:inline">
-                        {formatNumber(likes)}
-                      </span>
-                    </Button>
-
-                    <CommentsDailog post={post}>
-                      <p className="text">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          disabled
-                          className="flex items-center gap-2"
-                          onClick={handleComment}
-                        >
-                          <HiMiniUserGroup className="w-4 h-4" />
-                          <span className="hidden sm:inline">
-                            {formatNumber(post.comments)}
-                          </span>
-                        </Button>
-                      </p>
-                    </CommentsDailog>
-
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-2"
-                      onClick={handleShare}
-                    >
-                      <Share2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">
-                        {formatNumber(post.shares)}
-                      </span>
-                    </Button>
-
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Eye className="w-4 h-4" />
-                      <span className="hidden sm:inline">
-                        {formatNumber(post.views)}
-                      </span>
-                    </Button>
+                    <CardDescription className="flex items-center gap-2">
+                      {post?.User?.first_name + " " + post?.User?.last_name} •{" "}
+                      {formatPostTime(post.createdAt)}
+                    </CardDescription>
                   </div>
                 </div>
-                <ScrollArea className="h-[220px] bg-white w-full rounded-md p-4">
-                  <div className="text relative">
-                    <Input
-                      type="text"
-                      name="comment"
-                      id="comment"
-                      className="h-12 "
-                      placeholder="Add your comment here..."
-                      onChange={handleChanges}
-                    />
-                    <button className="text absolute right-0 top-0 hover:bg-blue-500 flex justify-center items-center h-full w-12 bg-blue-600 rounded-br-lg rounded-tr-lg">
-                      <RiSendPlaneFill className="text-white" size={20} />
-                    </button>
+              </div>
+              <div>
+                {/* <h3 className="font-semibold mb-2">{post.Post.title}</h3> */}
+                <p className="text-sm text-muted-foreground">
+                  {post.Post.content}
+                </p>
+              </div>
+
+              {post.Post.Media.length > 0 && (
+                <PostMedia
+                  mediaItems={post.Post.Media}
+                  className="max-h-[290px]"
+                />
+              )}
+
+              <div className="flex items-center justify-between pt-4 border-t">
+                <Button
+                  variant={isLiked ? "default" : "ghost"}
+                  size="sm"
+                  className="flex items-center gap-2 transition-all"
+                  onClick={handleLike}
+                >
+                  <ThumbsUp
+                    className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`}
+                  />
+                  <span className="hidden sm:inline">
+                    {formatNumber(likes)}
+                  </span>
+                </Button>
+
+                <CommentsDailog post={post}>
+                  <p className="text">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled
+                      className="flex items-center gap-2"
+                      onClick={handleComment}
+                    >
+                      <HiMiniUserGroup className="w-4 h-4" />
+                      <span className="hidden sm:inline">
+                        {formatNumber(post.Post.commentcount)}
+                      </span>
+                    </Button>
+                  </p>
+                </CommentsDailog>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  onClick={handleShare}
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span className="hidden sm:inline">
+                    {formatNumber(post.Post.rePostCount)}
+                  </span>
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span className="">{formatNumber(post.Post.views)}</span>
+                </Button>
+              </div>
+            </div>
+            <ScrollArea className="h-[220px] bg-white w-full rounded-md p-4">
+              <div className="text relative">
+                <Input
+                  type="text"
+                  name="comment"
+                  id="comment"
+                  value={postComments}
+                  className="h-12 "
+                  placeholder="Add your comment here..."
+                  onChange={handleChanges}
+                />
+                <button
+                  onClick={handlePostComments}
+                  className="text absolute right-0 top-0 hover:bg-blue-500 flex justify-center items-center h-full w-12 bg-blue-600 rounded-br-lg rounded-tr-lg"
+                >
+                  <RiSendPlaneFill className="text-white" size={20} />
+                </button>
+              </div>
+              {comments.map((co) => (
+                <div key={co.id}>
+                  <div className="flex gap-3 my-5 flex-1">
+                    <Avatar>
+                      <AvatarImage src={co.avatar} alt={co.author} />
+                      <AvatarFallback>{co.author.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <CardTitle className="text-base">{co.author}</CardTitle>
+                        {/* {post.sponsored && (
+                          <Badge variant="secondary" className="text-xs">
+                            Sponsored
+                          </Badge>
+                        )} */}
+                      </div>
+                      <CardDescription className="flex items-center gap-2">
+                        {co.username} • {co.time}
+                      </CardDescription>
+                      <div className="text flex justify-between">
+                        <p className="text">{co?.content}</p>
+                        <MdFavorite size={20} />
+                      </div>
+                    </div>
                   </div>
-                  {comments.map((co) => (
-                    <div key={co.id}>
-                      <div className="flex gap-3 my-5 flex-1">
-                        <Avatar>
-                          <AvatarImage src={co.avatar} alt={co.author} />
-                          <AvatarFallback>{co.author.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <CardTitle className="text-base">
-                              {co.author}
-                            </CardTitle>
-                            {post.sponsored && (
-                              <Badge variant="secondary" className="text-xs">
-                                Sponsored
-                              </Badge>
-                            )}
-                          </div>
-                          <CardDescription className="flex items-center gap-2">
-                            {co.username} • {co.time}
-                          </CardDescription>
-                          <div className="text flex justify-between">
-                            <p className="text">{co?.content}</p>
-                            <MdFavorite size={20} />
+                  {co.replies.length > 0 &&
+                    co.replies.map((rep) => (
+                      <div key={rep.id} className="text ml-10">
+                        <div className="flex gap-3 my-5 flex-1">
+                          <Avatar>
+                            <AvatarImage src={rep.avatar} alt={rep.author} />
+                            <AvatarFallback>
+                              {rep.author.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <CardTitle className="text-base">
+                                {rep.author}
+                              </CardTitle>
+                              {/* {post.sponsored && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Sponsored
+                                </Badge>
+                              )} */}
+                            </div>
+                            <CardDescription className="flex items-center gap-2">
+                              {rep.username} • {rep.time}
+                            </CardDescription>
+                            <div className="text flex justify-between">
+                              <p className="text">{rep?.content}</p>
+                              <MdFavorite size={20} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      {co.replies.length > 0 &&
-                        co.replies.map((rep) => (
-                          <div key={rep.id} className="text ml-10">
-                            <div className="flex gap-3 my-5 flex-1">
-                              <Avatar>
-                                <AvatarImage
-                                  src={rep.avatar}
-                                  alt={rep.author}
-                                />
-                                <AvatarFallback>
-                                  {rep.author.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <CardTitle className="text-base">
-                                    {rep.author}
-                                  </CardTitle>
-                                  {post.sponsored && (
-                                    <Badge
-                                      variant="secondary"
-                                      className="text-xs"
-                                    >
-                                      Sponsored
-                                    </Badge>
-                                  )}
-                                </div>
-                                <CardDescription className="flex items-center gap-2">
-                                  {rep.username} • {rep.time}
-                                </CardDescription>
-                                <div className="text flex justify-between">
-                                  <p className="text">{rep?.content}</p>
-                                  <MdFavorite size={20} />
+                        {rep.replies.length > 0 &&
+                          rep.replies.map((subrep) => (
+                            <div key={subrep.id} className="text ml-10">
+                              <div className="flex gap-3 my-5 flex-1">
+                                <Avatar>
+                                  <AvatarImage
+                                    src={subrep.avatar}
+                                    alt={subrep.author}
+                                  />
+                                  <AvatarFallback>
+                                    {subrep.author.charAt(0)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <CardTitle className="text-base">
+                                      {subrep.author}
+                                    </CardTitle>
+                                    {/* {post.sponsored && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-xs"
+                                      >
+                                        Sponsored
+                                      </Badge>
+                                    )} */}
+                                  </div>
+                                  <CardDescription className="flex items-center gap-2">
+                                    {subrep.username} • {subrep.time}
+                                  </CardDescription>
+                                  <div className="text flex justify-between">
+                                    <p className="text">{subrep?.content}</p>
+                                    <MdFavorite size={20} />
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                            {rep.replies.length > 0 &&
-                              rep.replies.map((subrep) => (
-                                <div key={subrep.id} className="text ml-10">
-                                  <div className="flex gap-3 my-5 flex-1">
-                                    <Avatar>
-                                      <AvatarImage
-                                        src={subrep.avatar}
-                                        alt={subrep.author}
-                                      />
-                                      <AvatarFallback>
-                                        {subrep.author.charAt(0)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <CardTitle className="text-base">
-                                          {subrep.author}
-                                        </CardTitle>
-                                        {post.sponsored && (
-                                          <Badge
-                                            variant="secondary"
-                                            className="text-xs"
-                                          >
-                                            Sponsored
-                                          </Badge>
-                                        )}
-                                      </div>
-                                      <CardDescription className="flex items-center gap-2">
-                                        {subrep.username} • {subrep.time}
-                                      </CardDescription>
-                                      <div className="text flex justify-between">
-                                        <p className="text">
-                                          {subrep?.content}
-                                        </p>
-                                        <MdFavorite size={20} />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-                </ScrollArea>
-              </div>
+                          ))}
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </ScrollArea>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

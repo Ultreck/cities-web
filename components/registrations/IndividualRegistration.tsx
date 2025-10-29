@@ -60,7 +60,7 @@ export default function IndividualRegistration() {
       const rawData = { ...data, phone_number: Number(data.phone_number) };
       console.log(rawData);
 
-      const res = await clientApi.post(`/register/individual`, rawData);
+      const res = await clientApi.post(`/user/register/individual`, rawData);
 
       setLoading(false);
       console.log(res);

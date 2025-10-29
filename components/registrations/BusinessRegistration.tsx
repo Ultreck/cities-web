@@ -45,7 +45,7 @@ export default function BusinessRegistration() {
     // setLoading(true);
        setLoading(true);
        console.log(data);
-       const res = await clientApi.post(`/register/business`, data);
+       const res = await clientApi.post(`/user/register/business`, data);
        setLoading(false);
        if (res.status) {
       toast.success("Registration successful!");

@@ -44,7 +44,7 @@ export default function Login() {
   const onSubmit = async (data: UserLoginProps) => {
     try {
       setLoading(true);
-      const res = await clientApi.post(`/login/`, data);
+      const res = await clientApi.post(`/user/login/`, data);
 
       console.log(res);
       const token = res.data.token;

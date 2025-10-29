@@ -37,7 +37,7 @@ export default function ForgotPasswordPhone() {
   const onSubmit = async (data: ResetPasswordProps) => {
     try {
       setLoading(true);
-      const res = await clientApi.post(`/forgot_password`, data);
+      const res = await clientApi.post(`/user/forgot_password`, data);
 
       console.log(res);
 

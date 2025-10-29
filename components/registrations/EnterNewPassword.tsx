@@ -43,7 +43,7 @@ export default function EnterNewPassword() {
 
     try {
       setLoading(true);
-      const res = await clientApi.patch(`/reset_password`, payload);
+      const res = await clientApi.patch(`/user/reset_password`, payload);
 
       console.log(res);
       if (res.data.status) {

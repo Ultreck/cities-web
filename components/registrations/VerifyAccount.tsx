@@ -55,7 +55,7 @@ export default function VerifyAccount() {
     console.log(data);
 
     const response = await clientApi.post(
-      "/register/account_verification",
+      "/user/register/account_verification",
       data
     );
     console.log(response.data.status);
@@ -75,7 +75,7 @@ export default function VerifyAccount() {
     console.log(data);
 
     const response = await clientApi.post(
-      "/register/resend_verification_code",
+      "/user/register/resend_verification_code",
       data
     );
     console.log(response.data.status);

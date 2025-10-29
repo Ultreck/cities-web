@@ -83,7 +83,7 @@ export default function FinishSetup() {
     const timeInterval = setTimeout(() =>{
       if (form.watch("user_name")) {
         setIsVerified(true);
-        const response = clientApi.post(`/register/username_suggestion`, data);
+        const response = clientApi.post(`/user/register/username_suggestion`, data);
         response
           .then((res) => {
             toast.success(res.data.message);
@@ -119,7 +119,7 @@ export default function FinishSetup() {
       state: stateName?.name,
     };
     const res = await clientApi.post(
-      `/register/complete_registration`,
+      `/user/register/complete_registration`,
       dataValue
     );
     
