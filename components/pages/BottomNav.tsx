@@ -1,12 +1,11 @@
-import { Gift, Home, Settings, ShoppingBag, User, Wallet } from "lucide-react";
+import { Gift, Home, ShoppingBag, User, Wallet } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import { Badge } from "../ui/badge";
 
 const BottomNav = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
   const navItems = [
     { label: "Home", icon: Home, href: "/n" },
@@ -23,10 +22,10 @@ const BottomNav = () => {
     badge,
     href,
   }: {
-    icon: any;
+    icon: LucideIcon;
     label: string;
-    active: any;
-    badge: any;
+    active: boolean;
+    badge: number;
     href: string;
   }) => (
     <Link
@@ -56,15 +55,12 @@ const BottomNav = () => {
         className={`
              fixed lg:sticky bottom-0 w-full items-center flex justify-between border-t bg-background z-40
               p-4 space-y-2
-             transition-transform duration-300 ease-in-out
-             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-             lg:-translate-x-full
            `}
       >
         {navItems.map((item) => (
           <NavItem
             key={item.label}
-            badge={""}
+            badge={0}
             icon={item.icon}
             href={item.href}
             label={item.label}

@@ -119,7 +119,7 @@ export default function CommunityProfile() {
                 The Latin Community is a welcoming space for individuals who share a passion for Latin culture, traditions, and heritage. We celebrate the rich diversity of Latin American countries and foster meaningful connections among our members.
               </p>
               <p>
-                Our community organizes regular events, workshops, and social gatherings to promote cultural exchange and community engagement. Whether you're interested in language learning, cultural celebrations, or simply connecting with like-minded individuals, you'll find a home here.
+                Our community organizes regular events, workshops, and social gatherings to promote cultural exchange and community engagement. Whether you&apos;re interested in language learning, cultural celebrations, or simply connecting with like-minded individuals, you&apos;ll find a home here.
               </p>
               <h3 className="text-lg font-semibold text-gray-900 mt-6">What We Offer</h3>
               <ul className="list-disc list-inside space-y-2">
@@ -166,4 +166,3 @@ export default function CommunityProfile() {
     </div>
   );
 }
-

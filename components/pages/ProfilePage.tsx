@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -21,14 +19,37 @@ import {
   DollarSign,
   UserPlus,
 } from "lucide-react";
-import { PostCard } from "../PostCard";
 import Image from "next/image";
-import { mockSellerProfile } from "@/lib/mockData";
-// import { PostCard } from './PostCard';
 
-export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
+interface User {
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  location: string;
+  bio: string;
+  joinDate: string;
+  connections: number;
+  posts: number;
+  communities: number;
+  media: number;
+  avatar: string;
+}
+
+interface Post {
+  id: string;
+  image: string;
+  title?: string;
+}
+
+interface ProfilePageProps {
+  user?: User;
+  posts?: Post[];
+}
+
+export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(user);
+  const [editedUser, setEditedUser] = useState<User>(user || {} as User);
 
   const handleSave = () => {
     // Save logic here
@@ -37,17 +58,16 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
   };
 
   const handleCancel = () => {
-    setEditedUser(user);
+    setEditedUser(user || {} as User);
     setIsEditing(false);
   };
 
     const [activeTab, setActiveTab] = useState<"posts" | "community" | "media">("posts");
-    const seller = mockSellerProfile;
   
     const tabs = [
-      { id: "posts", label: "Posts" },
-      { id: "community", label: "Community" },
-      { id: "media", label: "Media" },
+      { id: "posts" as const, label: "Posts" },
+      { id: "community" as const, label: "Community" },
+      { id: "media" as const, label: "Media" },
     ];
 
   return (
@@ -238,65 +258,13 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
       </div>
 
       {/* Content Tabs */}
-      {/* <Tabs defaultValue="posts" className="w-full">
-        <TabsList className="w-full sm:w-auto">
-          <TabsTrigger value="posts">Posts</TabsTrigger>
-          <TabsTrigger value="community">Community</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="posts" className="mt-6 space-y-4 grid gridcols-2 md:grid-cols-3 gap-4">
-          {posts.length > 0 ? (
-            posts.map((post: any) => (
-              <div key={post.id} className="rounded-lg hover:shadow-lg transition-shadow hover:scale-102">
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  width={200}
-                  height={200}
-                  className="w-full h-auto"
-                  placeholder="blur"
-                />
-              </div>
-            ))
-          ) : (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <p className="text-muted-foreground">No posts yet</p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="community" className="mt-6">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">
-                Community content coming soon...
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="media" className="mt-6">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">
-                Media gallery coming soon...
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs> */}
-
-
        {/* Tabs */}
         <div className="bg-white rounded-lg shadow">
           <div className="flex border-b">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-4 font-semibold text-center transition ${
                   activeTab === tab.id
                     ? "text-blue-600 border-b-2 border-blue-600"
@@ -312,14 +280,16 @@ export function ProfilePage({ user, posts = [] }: { user?: any; posts?: any }) {
           <div className="p-4">
             {activeTab === "posts" && (
               <div className="grid grid-cols-3 gap-2">
-                {seller.posts?.map((post) => (
+                {posts.map((post) => (
                   <div
                     key={post.id}
                     className="aspect-square rounded-lg overflow-hidden bg-gray-200 cursor-pointer hover:opacity-80 transition"
                   >
-                    <img
+                    <Image
                       src={post.image}
                       alt={`post-${post.id}`}
+                      width={200}
+                      height={200}
                       className="w-full h-full object-cover"
                     />
                   </div>

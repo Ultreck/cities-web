@@ -18,21 +18,18 @@ import { selectUserDetails } from "@/redux/selectors";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [posts, setPosts] = useState(initialPosts);
-  const [notifications, setNotifications] = useState(initialNotifications);
-  const [messages, setMessages] = useState(initialMessages);
     const details = useSelector(selectUserDetails);
     
 
-  const unreadNotifications = notifications.filter((n) => !n.read).length;
-  const unreadMessages = messages.reduce((sum, msg) => sum + msg.unread, 0);
+  const unreadNotifications = initialNotifications.filter((n) => !n.read).length;
+  const unreadMessages = initialMessages.reduce((sum, msg) => sum + msg.unread, 0);
   const searchData = [
-    ...posts.map((p) => ({ ...p, type: "post" })),
+    ...initialPosts.map((p) => ({ ...p, type: "post" })),
     ...initialCommunities.map((c) => ({ ...c, type: "community" })),
     ...initialJobs.map((j) => ({ ...j, type: "job" })),
   ];
 
-  const handleSearch = (item: any) => {
+  const handleSearch = (item: { type: string }) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
     if (item.type === "community") {
