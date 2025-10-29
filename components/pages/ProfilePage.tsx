@@ -29,7 +29,7 @@ interface User {
   location: string;
   bio: string;
   joinDate: string;
-  connections: number;
+  connections: string;
   posts: number;
   communities: number;
   media: number;
