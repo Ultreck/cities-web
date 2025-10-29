@@ -5,7 +5,7 @@ import img2 from '../assets/images/Image (2).png';
 import img3 from '../assets/images/Image.png';
 export const initialPosts = [
   {
-    id: 1,
+    id: "1",
     author: 'David Adeleke',
     username: '@davido',
     avatar: img1,
@@ -21,7 +21,7 @@ export const initialPosts = [
     image: img1
   },
   {
-    id: 2,
+    id: "2",
     author: 'Peter Okoye',
     username: '@peterp',
     avatar: img2,
@@ -37,7 +37,7 @@ export const initialPosts = [
     image: img2
   },
   {
-    id: 3,
+    id: "3",
     author: 'MTN Nigeria',
     username: '@mtnng',
     avatar: img3,
