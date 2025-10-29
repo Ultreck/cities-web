@@ -3,6 +3,7 @@
 import clientApi from "@/lib/clientApi";
 import { RePostType } from "@/types/type-props";
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "react-toastify";
 
 const usePostHook = () => {
   const [posts, setPosts] = useState<RePostType[]>([]);
@@ -19,18 +20,29 @@ const usePostHook = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts, trigger]);
+    // const response = clientApi.get(`/post/`);
+    // response
+    //   .then((res) => {
+    //     console.log(res.data.data);
 
-  useEffect(() => {}, []);
+    //     setPosts(res.data.data);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+  }, []);
 
   const handleRepost = async (id: string, aud: string) => {
     const data = {
       post_id: id,
       audience: aud,
     };
+    console.log(data, id, aud);
+
     try {
       const res = await clientApi.post(`/post/repost`, data);
       console.log("Reposted:", res.data);
+      toast.success("Content reposted!")
       setPosts((prevPosts) =>
         prevPosts.map((p) =>
           p.post_id === id
@@ -38,10 +50,9 @@ const usePostHook = () => {
                 ...p,
                 Post: {
                   ...p.Post,
-                  isLiked: !p.Post.isLike,
-                  reactions_count: p.Post.isLike
-                    ? p.Post.reactionscount - 1
-                    : p.Post.reactionscount + 1,
+                  rePostCount: p.Post.rePostCount
+                    ? p.Post.rePostCount - 1
+                    : p.Post.rePostCount + 1,
                 },
               }
             : p
@@ -80,7 +91,8 @@ const usePostHook = () => {
   return {
     handlePostLikes,
     posts,
-    refetch: fetchPosts, // optional if you want manual refetch somewhere else
+    // refetch: fetchPosts,
+    handleRepost,
   };
 };
 

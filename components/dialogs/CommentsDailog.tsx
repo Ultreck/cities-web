@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 import { CommentType, RePostType } from "@/types/type-props";
 import PostMedia from "../PostMedia";
 import clientApi from "@/lib/clientApi";
-import { log } from "console";
+import { FaRegComments } from "react-icons/fa6";
 
 const CommentsDailog = ({
   children,
@@ -39,10 +39,13 @@ const CommentsDailog = ({
   const comments = commentsData;
   const [postComments, setPostComments] = useState<string | undefined>("");
   const [commentsDatas, setCommentsDatas] = useState<CommentType[] | []>([]);
+  const [replyComments, setreplyComments] = useState<string | undefined>("");
   const [isLiked, setIsLiked] = useState(post.Post.isLike);
   const [likes, setLikes] = useState(post.Post.reactionscount);
   const [showComments, setShowComments] = useState(false);
-  const router = useRouter();
+  const [commentIndex, setCommentIndex] = useState<string | undefined>("");
+  // const router = useRouter();
+  const [isReply, setIsReply] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleLike = () => {
@@ -105,6 +108,7 @@ const CommentsDailog = ({
       const res = await clientApi.get(
         `/post/comments/?post_id=${post.post_id}`
       );
+      console.log(res.data.comments);
       setCommentsDatas(res.data.comments);
     } catch (error) {
       console.error("Error fetching post comments:", error);
@@ -115,8 +119,47 @@ const CommentsDailog = ({
     fetchPostComments();
   }, [fetchPostComments, postComments]);
 
-  console.log(post);
-  
+  const handleReplyChanges = (e: any) => {
+    setreplyComments(e.target.value);
+    console.log(e.target.value);
+  };
+  const handleReplyComment = async (id: string, post_id: string) => {
+    console.log(id, replyComments, post_id);
+    const data = {
+      content: replyComments,
+      post_id: post_id,
+      comment_id: id,
+    };
+    const res = await clientApi.post(`/post/comment/reply`, data);
+    console.log(res.data);
+    setreplyComments("");
+  };
+
+  const subComment = (id: string) => {
+    const [repl, setrepl] = useState(second)
+    return (
+      <div key={id} className="text ml-10">
+        <div className="flex gap-3 my-5 flex-1">
+          <Avatar>
+            <AvatarImage src={rep.avatar} alt={rep.author} />
+            <AvatarFallback>{rep.author.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <CardTitle className="text-base">{rep.author}</CardTitle>
+            </div>
+            <CardDescription className="flex items-center gap-2">
+              {rep.username} • {rep.time}
+            </CardDescription>
+            <div className="text flex justify-between">
+              <p className="text">{rep?.content}</p>
+              <MdFavorite size={20} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -175,7 +218,7 @@ const CommentsDailog = ({
               {post.Post.Media.length > 0 && (
                 <PostMedia
                   mediaItems={post.Post.Media}
-                  className="max-h-[290px]"
+                  className="max-h-[230px]"
                 />
               )}
 
@@ -193,23 +236,23 @@ const CommentsDailog = ({
                     {formatNumber(likes)}
                   </span>
                 </Button>
+                <p className="text">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled
+                    className="flex items-center gap-2"
+                    onClick={handleComment}
+                  >
+                    <HiMiniUserGroup className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {formatNumber(post.Post.commentcount)}
+                    </span>
+                  </Button>
+                </p>
 
-                <CommentsDailog post={post}>
-                  <p className="text">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled
-                      className="flex items-center gap-2"
-                      onClick={handleComment}
-                    >
-                      <HiMiniUserGroup className="w-4 h-4" />
-                      <span className="hidden sm:inline">
-                        {formatNumber(post.Post.commentcount)}
-                      </span>
-                    </Button>
-                  </p>
-                </CommentsDailog>
+                {/* <CommentsDailog post={post}>
+                </CommentsDailog> */}
 
                 <Button
                   variant="ghost"
@@ -233,7 +276,7 @@ const CommentsDailog = ({
                 </Button>
               </div>
             </div>
-            <ScrollArea className="h-[220px] bg-white w-full rounded-md p-4">
+            <ScrollArea className="h-[270px] bg-white w-full rounded-md p-4">
               <div className="text relative">
                 <Input
                   type="text"
@@ -268,18 +311,70 @@ const CommentsDailog = ({
                         <CardTitle className="text-base">
                           {co.User.first_name}
                         </CardTitle>
-                        {/* {post.sponsored && (
-                          <Badge variant="secondary" className="text-xs">
-                            Sponsored
-                          </Badge>
-                        )} */}
                       </div>
                       <CardDescription className="flex items-center gap-2">
                         {co.User.user_name} • {formatPostTime(co.createdAt)}
                       </CardDescription>
                       <div className="text flex justify-between">
-                        <p className="text">{co?.content}</p>
+                        <div className="text">
+                          <p className="text">{co?.content}</p>
+                        </div>
                         <MdFavorite size={20} />
+                      </div>
+                      <div className="text flex items-center w-full ">
+                        <Button
+                          variant={"ghost"}
+                          size="sm"
+                          className="flex items-center gap-2 transition-all"
+                          onClick={handleLike}
+                        >
+                          <ThumbsUp
+                            className={`w-4 h-4 ${
+                              co.isLike ? "text-blue-600" : ""
+                            }`}
+                          />
+                          <span className="hidden sm:inline">
+                            {co.reactionCount}
+                          </span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="flex items-center gap-2"
+                          onClick={() => {
+                            setIsReply(!isReply);
+                            setCommentIndex(co.unique_id);
+                          }}
+                        >
+                          <FaRegComments className="w-4 h-4" />
+                          <span className="hidden sm:inline">
+                            {co.replyCount}
+                          </span>
+                        </Button>
+                        {isReply && commentIndex === co.unique_id && (
+                          <div className="text relative w-full">
+                            <Input
+                              type="text"
+                              name="reply"
+                              id="reply"
+                              value={replyComments}
+                              className="h-10 "
+                              placeholder="Add your comment here..."
+                              onChange={handleReplyChanges}
+                            />
+                            <button
+                              onClick={() => {
+                                handleReplyComment(co.unique_id, co.post_id);
+                              }}
+                              className="text absolute right-0 top-0 hover:bg-blue-500 flex justify-center items-center h-full w-12 bg-blue-600 rounded-br-lg rounded-tr-lg"
+                            >
+                              <RiSendPlaneFill
+                                className="text-white"
+                                size={20}
+                              />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

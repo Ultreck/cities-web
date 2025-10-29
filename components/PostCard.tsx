@@ -51,9 +51,11 @@ interface PostCardProps {
   onComment?: (id: number) => void;
   onShare?: (id: number) => void;
   handlePostLikes?: (id: string) => void;
+  handleRepost: (id: string, aud: string) => void;
+
 }
 
-export function PostCard({ post, onLike, onComment, onShare, handlePostLikes }: PostCardProps) {
+export function PostCard({ post, onLike, onComment, onShare, handlePostLikes, handleRepost }: PostCardProps) {
   const [isLiked, setIsLiked] = useState();
   const [likes, setLikes] = useState();
   const [showComments, setShowComments] = useState(false);
@@ -190,7 +192,7 @@ export function PostCard({ post, onLike, onComment, onShare, handlePostLikes }: 
             <span className="hidden sm:inline">Likes</span>
           </Button>
 
-          <RepostDialog>
+          <RepostDialog id={post.post_id} onRepost={handleRepost} >
             <Button
               variant="ghost"
               size="sm"

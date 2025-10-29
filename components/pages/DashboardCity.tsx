@@ -40,7 +40,7 @@ const DashboardCity = () => {
   // const [posts, setPosts] = useState<RePostType[] | []>([]);
   const [communities, setCommunities] = useState(initialCommunities);
   const dispatch = useDispatch();
-  const {posts, handlePostLikes} = usePostHook();
+  const {posts, handlePostLikes, handleRepost} = usePostHook();
 
   useEffect(() => {
     const response = clientApi.get("/user");
@@ -123,7 +123,7 @@ const DashboardCity = () => {
 
           {/* Posts Feed */}
           {posts.map((post) => (
-            <PostCard key={post.unique_id} post={post} handlePostLikes={handlePostLikes} onLike={handleLike} />
+            <PostCard key={post.unique_id} handleRepost={handleRepost} post={post} handlePostLikes={handlePostLikes} onLike={handleLike} />
           ))}
         </div>
 

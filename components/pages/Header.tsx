@@ -83,8 +83,8 @@ const Header = () => {
               )}
             </Link>
             <Avatar className="w-8 h-8 cursor-pointer">
-               <AvatarImage src={details?.profilePicture.media} />
-              <AvatarFallback>{currentUser.avatar}</AvatarFallback>
+               <AvatarImage src={details?.profilePicture?.media} />
+              <AvatarFallback>{currentUser?.avatar}</AvatarFallback>
             </Avatar>
           </div>
         </div>
