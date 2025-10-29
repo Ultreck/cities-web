@@ -19,7 +19,7 @@ import {
   DollarSign,
   UserPlus,
 } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface User {
   name: string;
@@ -38,7 +38,7 @@ interface User {
 
 interface Post {
   id: string;
-  image: string;
+  image: string | StaticImageData;
   title?: string;
 }
 
