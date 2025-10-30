@@ -96,7 +96,7 @@ export default function ForgotPasswordPhone() {
               Reset your PIN
             </h1>
             <p className="text-gray-600">
-              Enter your account's phone number, a reset token will be sent for
+              Enter your account&apos;s phone number, a reset token will be sent for
               verification
             </p>
           </div>

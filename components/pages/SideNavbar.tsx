@@ -44,12 +44,6 @@ const SideNavbar = () => {
     active,
     badge,
     href,
-  }: {
-    icon: any;
-    label: string;
-    active: any;
-    badge: any;
-    href: string;
   }) => (
     <Link
       href={href}

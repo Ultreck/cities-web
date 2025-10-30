@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export function SearchBar({ placeholder = "Search...", onSearch, data = [] }: {placeholder: string; onSearch: any; data: any}) {
+export function SearchBar({ placeholder = "Search...", onSearch, data = [] }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [showResults, setShowResults] = useState(false)
