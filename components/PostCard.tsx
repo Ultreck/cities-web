@@ -10,23 +10,18 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   ThumbsUp,
-  MessageCircle,
-  Share2,
   Eye,
-  ChevronRight,
 } from "lucide-react";
-import Image, { StaticImageData } from "next/image";
-import { HiMiniUserGroup, HiOutlineShare } from "react-icons/hi2";
+import { StaticImageData } from "next/image";
+import { HiOutlineShare } from "react-icons/hi2";
 import CommentsDailog from "./dialogs/CommentsDailog";
 import { AiOutlineComment } from "react-icons/ai";
 import RepostDialog from "./dialogs/RepostDialog";
 import Link from "next/link";
 import { RePostType } from "@/types/type-props";
 import PostMedia from "./PostMedia";
-import usePostHook from "@/hooks/use-post-hook";
 
 export interface Post {
   id: number;
@@ -55,9 +50,9 @@ interface PostCardProps {
 
 }
 
-export function PostCard({ post, onLike, onComment, onShare, handlePostLikes, handleRepost }: PostCardProps) {
-  const [isLiked, setIsLiked] = useState();
-  const [likes, setLikes] = useState();
+export function PostCard({ post, handlePostLikes, handleRepost }: PostCardProps) {
+  // const [isLiked, setIsLiked] = useState();
+  // const [likes, setLikes] = useState();
   const [showComments, setShowComments] = useState(false);
 
   // const handleLike = () => {

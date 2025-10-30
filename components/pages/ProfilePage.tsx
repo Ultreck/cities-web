@@ -20,6 +20,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import Image, { StaticImageData } from "next/image";
+import { RePostType } from "@/types/type-props";
 
 interface User {
   name: string;
@@ -44,7 +45,7 @@ interface Post {
 
 interface ProfilePageProps {
   user?: User;
-  posts?: Post[];
+  posts?: RePostType[];
 }
 
 export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
@@ -285,13 +286,13 @@ export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
                     key={post.id}
                     className="aspect-square rounded-lg overflow-hidden bg-gray-200 cursor-pointer hover:opacity-80 transition"
                   >
-                    <Image
+                    {/* <Image
                       src={post.image}
                       alt={`post-${post.id}`}
                       width={200}
                       height={200}
                       className="w-full h-full object-cover"
-                    />
+                    /> */}
                   </div>
                 ))}
               </div>

@@ -177,6 +177,7 @@ export interface PostType {
 export interface RePostType {
   unique_id: string;
   user_id: string;
+  id?: string;
   User: UserType;
   reposter_id: string | null;
   IsRePost: boolean;

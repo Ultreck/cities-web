@@ -83,17 +83,17 @@ function MainPage() {
   };
 
   const handleLike = (postId: string, liked: boolean) => {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              likedByUser: liked,
-              likes: liked ? post.likes + 1 : post.likes - 1,
-            }
-          : post
-      )
-    );
+    // setPosts((prev) =>
+    //   prev.map((post) =>
+    //     post.id === postId
+    //       ? {
+    //           ...post,
+    //           likedByUser: liked,
+    //           likes: liked ? post.likes + 1 : post.likes - 1,
+    //         }
+    //       : post
+    //   )
+    // );
   };
 
   const handleJoinCommunity = (communityId: string) => {
@@ -121,8 +121,8 @@ function MainPage() {
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
-      {/* <Icon className="w-5 h-5" /> */}
-      {icon}
+      <Icon className="w-5 h-5" />
+      {/* {icon} */}
       <span className="font-medium hidden lg:inline">{label}</span>
       {badge !== undefined && badge > 0 && (
         <Badge
@@ -157,11 +157,11 @@ function MainPage() {
           </div>
 
           <div className="hidden md:flex flex-1 max-w-xl mx-8">
-            <SearchBar
+            {/* <SearchBar
               placeholder="Search communities, posts, people..."
               data={searchData}
               onSearch={handleSearch}
-            />
+            /> */}
           </div>
 
           <div className="flex items-center gap-2">
@@ -238,7 +238,7 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={<ShoppingBag />}
+              icon={ShoppingBag}
               label="For Sale"
               badge={0}
               active={activeTab === "forsale"}
@@ -258,7 +258,7 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={<Bell />}
+              icon={Bell}
               label="Notifications"
               active={activeTab === "notifications"}
               badge={unreadNotifications}
@@ -268,7 +268,7 @@ function MainPage() {
               }}
             />
             <NavItem
-              icon={<MessageSquare />}
+              icon={MessageSquare}
               label="Messages"
               active={activeTab === "messages"}
               badge={unreadMessages}
@@ -310,11 +310,11 @@ function MainPage() {
                 <div className="lg:col-span-2 space-y-4">
                   {/* Mobile Search */}
                   <div className="md:hidden mb-4">
-                    <SearchBar
+                    {/* <SearchBar
                       placeholder="Search..."
                       data={searchData}
                       onSearch={handleSearch}
-                    />
+                    /> */}
                   </div>
 
                   {/* Create Post */}

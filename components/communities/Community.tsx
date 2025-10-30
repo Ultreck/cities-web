@@ -20,18 +20,18 @@ import { mockCommunityCards } from "@/lib/mockData";
 
 const Community = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [_communities, setCommunities] = useState(initialCommunities);
+  // const [_communities, setCommunities] = useState(initialCommunities);
 
   const filteredCommunities = mockCommunityCards.filter((community) =>
     community.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleJoinCommunity = (communityId: number) => {
-    setCommunities((prev) =>
-      prev.map((comm) =>
-        comm.id === communityId ? { ...comm, joined: !comm.joined } : comm
-      )
-    );
+  const handleJoinCommunity = (communityId: string) => {
+    // setCommunities((prev) =>
+    //   prev.map((comm) =>
+    //     comm.id === communityId ? { ...comm, joined: !comm.joined } : comm
+    //   )
+    // );
   };
 
   return (

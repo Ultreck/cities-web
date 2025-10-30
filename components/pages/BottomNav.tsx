@@ -16,7 +16,7 @@ const BottomNav = () => {
     // { label: "Rewards", icon: Gift, href: "/n/rewards" },
   ];
   const NavItem = ({
-    icon,
+    icon: Icon,
     label,
     active,
     badge,
@@ -36,7 +36,7 @@ const BottomNav = () => {
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
-      {icon} 
+      <Icon className="w-4 h-4"/>
       <span className="font-medium text-xs">{label}</span>
       {badge > 0 && (
         <Badge

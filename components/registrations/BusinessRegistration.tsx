@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 
 export type userSchemaProps = z.infer<typeof businessFormSchema>;
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+// const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function BusinessRegistration() {
   const [loading, setLoading] = useState(false);
   const { router } = useParamHook();

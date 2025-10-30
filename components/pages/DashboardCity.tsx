@@ -88,7 +88,7 @@ const DashboardCity = () => {
     // );
   };
 
-  const handleJoinCommunity = (communityId: number) => {
+  const handleJoinCommunity = (communityId: string) => {
     setCommunities((prev) =>
       prev.map((comm) =>
         comm.id === communityId ? { ...comm, joined: !comm.joined } : comm

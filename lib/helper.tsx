@@ -55,12 +55,12 @@ export const initialPosts = [
 ];
 
 export const initialCommunities = [
-  { id: 1, name: 'Lekki Community', members: '35k', image: '🏘️', status: 'Public', joined: false },
-  { id: 2, name: 'Victoria Island', members: '235k', image: '🌆', status: 'Public', joined: false },
-  { id: 3, name: 'Ikeja', members: '134k', image: '🏙️', status: 'Public', joined: false },
-  { id: 4, name: 'Festac', members: '2.19k', image: '🏢', status: 'Public', joined: false },
-  { id: 5, name: 'Yaba Community', members: '89k', image: '🏘️', status: 'Public', joined: false },
-  { id: 6, name: 'Surulere Community', members: '156k', image: '🏙️', status: 'Public', joined: false },
+  { id: '1', name: 'Lekki Community', members: '35k', image: '🏘️', status: 'Public', joined: false },
+  { id: '2', name: 'Victoria Island', members: '235k', image: '🌆', status: 'Public', joined: false },
+  { id: '3', name: 'Ikeja', members: '134k', image: '🏙️', status: 'Public', joined: false },
+  { id: '4', name: 'Festac', members: '2.19k', image: '🏢', status: 'Public', joined: false },
+  { id: '5', name: 'Yaba Community', members: '89k', image: '🏘️', status: 'Public', joined: false },
+  { id: '6', name: 'Surulere Community', members: '156k', image: '🏙️', status: 'Public', joined: false },
 ];
 
 export const initialEvents = [
