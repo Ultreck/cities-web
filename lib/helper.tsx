@@ -8,7 +8,7 @@ export const initialPosts = [
     id: "1",
     author: 'David Adeleke',
     username: '@davido',
-    avatar: img1,
+    // avatar: img1,
     time: '14 mins ago',
     title: 'Could North Korea handle a Covid-19 outbreak?',
     content: 'Post-Covid-19 committee for creative industry: A writer, gender perspective',
@@ -18,13 +18,13 @@ export const initialPosts = [
     views: 45,
     sponsored: false,
     likedByUser: false,
-    image: img1
+    image: img1.src
   },
   {
     id: "2",
     author: 'Peter Okoye',
     username: '@peterp',
-    avatar: img2,
+    // avatar: img2,
     time: '28 mins ago',
     title: 'Disturbing Letter About Life in COVID-19 Ward in...',
     content: 'Earlier this week, British medical journal The Lancet published a...',
@@ -34,13 +34,13 @@ export const initialPosts = [
     views: 45,
     sponsored: false,
     likedByUser: false,
-    image: img2
+    image: img2.src
   },
   {
     id: "3",
     author: 'MTN Nigeria',
     username: '@mtnng',
-    avatar: img3,
+    // avatar: img3,
     time: '1 hour ago',
     title: 'Buy the MTN 5G smartphone',
     content: 'Buy the MTN 5G smartphone and stand a chance to win a Sony headphone',
@@ -50,7 +50,7 @@ export const initialPosts = [
     views: 45,
     sponsored: true,
     likedByUser: false,
-    image: img3
+    image: img3.src
   }
 ];
 

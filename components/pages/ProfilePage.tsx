@@ -39,18 +39,29 @@ interface User {
 
 interface Post {
   id: string;
-  image: string | StaticImageData;
-  title?: string;
+  author: string;
+  username: string;
+  // avatar: img1;
+  time: string;
+  title: string;
+  content: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  views: number;
+  sponsored: false;
+  likedByUser: false;
+  image?: string;
 }
 
 interface ProfilePageProps {
   user?: User;
-  posts?: RePostType[];
+  posts?: Post[];
 }
 
 export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState<User>(user || {} as User);
+  const [editedUser, setEditedUser] = useState<User>(user || ({} as User));
 
   const handleSave = () => {
     // Save logic here
@@ -59,17 +70,19 @@ export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
   };
 
   const handleCancel = () => {
-    setEditedUser(user || {} as User);
+    setEditedUser(user || ({} as User));
     setIsEditing(false);
   };
 
-    const [activeTab, setActiveTab] = useState<"posts" | "community" | "media">("posts");
-  
-    const tabs = [
-      { id: "posts" as const, label: "Posts" },
-      { id: "community" as const, label: "Community" },
-      { id: "media" as const, label: "Media" },
-    ];
+  const [activeTab, setActiveTab] = useState<"posts" | "community" | "media">(
+    "posts"
+  );
+
+  const tabs = [
+    { id: "posts" as const, label: "Posts" },
+    { id: "community" as const, label: "Community" },
+    { id: "media" as const, label: "Media" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -259,60 +272,58 @@ export function ProfilePage({ user, posts = [] }: ProfilePageProps) {
       </div>
 
       {/* Content Tabs */}
-       {/* Tabs */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="flex border-b">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-4 font-semibold text-center transition ${
-                  activeTab === tab.id
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+      {/* Tabs */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="flex border-b">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 py-4 font-semibold text-center transition ${
+                activeTab === tab.id
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* Tab Content */}
-          <div className="p-4">
-            {activeTab === "posts" && (
-              <div className="grid grid-cols-3 gap-2">
-                {posts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="aspect-square rounded-lg overflow-hidden bg-gray-200 cursor-pointer hover:opacity-80 transition"
-                  >
-                    {/* <Image
+        {/* Tab Content */}
+        <div className="p-4">
+          {activeTab === "posts" && (
+            <div className="grid grid-cols-3 gap-2">
+              {posts.map((post) => (
+                <div
+                  key={post.id}
+                  className="aspect-square rounded-lg overflow-hidden bg-gray-200 cursor-pointer hover:opacity-80 transition"
+                >
+                  {/* <Image
                       src={post.image}
                       alt={`post-${post.id}`}
                       width={200}
                       height={200}
                       className="w-full h-full object-cover"
                     /> */}
-                  </div>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
+          )}
 
-            {activeTab === "community" && (
-              <div className="text-center py-8 text-gray-500">
-                <p>No community posts yet</p>
-              </div>
-            )}
+          {activeTab === "community" && (
+            <div className="text-center py-8 text-gray-500">
+              <p>No community posts yet</p>
+            </div>
+          )}
 
-            {activeTab === "media" && (
-              <div className="text-center py-8 text-gray-500">
-                <p>No media yet</p>
-              </div>
-            )}
-          </div>
+          {activeTab === "media" && (
+            <div className="text-center py-8 text-gray-500">
+              <p>No media yet</p>
+            </div>
+          )}
         </div>
-
-      
+      </div>
     </div>
   );
 }
