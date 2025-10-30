@@ -55,27 +55,27 @@ export function NotificationsPage() {
   };
 
   const markAsRead = (id: number) => {
-    // setNotifications((prev: any) =>
-    //   prev.map((notif: any) =>
-    //     notif.id === id ? { ...notif, read: true } : notif
-    //   )
-    // );
+    setNotifications((prev: NotificationProps[]) =>
+      prev.map((notif: NotificationProps) =>
+        notif.id === id ? { ...notif, read: true } : notif
+      )
+    );
   };
 
   const markAllAsRead = () => {
     setNotifications((prev) =>
-      prev?.map((notif) => ({ ...notif, read: true }))
+      prev.map((notif) => ({ ...notif, read: true }))
     );
   };
 
-  const unreadCount = notifications?.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const filterNotifications = (filter: string) => {
     switch (filter) {
       case "unread":
-        return notifications?.filter((n) => !n.read);
+        return notifications.filter((n) => !n.read);
       case "read":
-        return notifications?.filter((n) => n.read);
+        return notifications.filter((n) => n.read);
       default:
         return notifications;
     }

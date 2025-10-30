@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import img from "../../assets/images/image 3.png";
@@ -69,11 +70,12 @@ export default function ForgotPasswordPhone() {
       {/* Left Side - Image */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 items-center justify-center">
         <div className="text-center w-full h-full text-white">
-          <div className="w-full h-full">
-            <img
-              src={img.src}
+          <div className="w-full h-full relative">
+            <Image
+              src={img}
               alt="Modern building"
-              className="w-full h-full object-cover shadow-2xl"
+              fill
+              className="object-cover shadow-2xl"
             />
           </div>
         </div>

@@ -4,31 +4,18 @@ import React, { useState } from "react";
 import { Badge } from "../ui/badge";
 import {
   Home,
-  Users,
+  User,
   ShoppingBag,
   Gift,
-  Bell,
-  MessageSquare,
-  MapPin,
-  TrendingUp,
-  Calendar,
-  Briefcase,
-  Building2,
-  User,
-  Settings,
-  Send,
-  DollarSign,
-  Menu,
-  X,
   Wallet,
+  Settings,
+  type LucideIcon,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Item } from "@radix-ui/react-accordion";
 
 const SideNavbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
   const navItems = [
     { label: "Home", icon: Home, href: "/n" },
@@ -44,6 +31,12 @@ const SideNavbar = () => {
     active,
     badge,
     href,
+  }: {
+    icon: LucideIcon;
+    label: string;
+    active: boolean;
+    badge: number;
+    href: string;
   }) => (
     <Link
       href={href}
@@ -85,7 +78,7 @@ const SideNavbar = () => {
         {navItems.map((item) => (
           <NavItem
             key={item.label}
-            badge={""}
+            badge={0}
             icon={item.icon}
             href={item.href}
             label={item.label}
@@ -100,7 +93,7 @@ const SideNavbar = () => {
           ].map((sub) => (
             <NavItem
               key={sub.label}
-              badge={""}
+              badge={0}
               icon={sub.icon}
               label={sub.label}
               href={sub.href}

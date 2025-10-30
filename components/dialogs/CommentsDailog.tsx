@@ -32,28 +32,19 @@ const CommentsDailog = ({
   children: React.ReactNode;
   post: RePostType;
 }) => {
-  const comments = commentsData;
-  const [postComments, setPostComments] = useState<string | undefined>("");
+  const [postComments, setPostComments] = useState("");
   const [commentsDatas, setCommentsDatas] = useState<CommentType[] | []>([]);
-  const [replyComments, setreplyComments] = useState<string | undefined>("");
-  const [isLiked, _setIsLiked] = useState(post.Post.isLike);
-  const [likes, _setLikes] = useState(post.Post.reactionscount);
-  const [showComments, setShowComments] = useState(false);
-  const [commentIndex, setCommentIndex] = useState<string | undefined>("");
-  // const router = useRouter();
+  const [replyComments, setreplyComments] = useState("");
+  const [isLiked, setIsLiked] = useState(post.Post.isLike);
+  const [likes, setLikes] = useState(post.Post.reactionscount);
   const [isReply, setIsReply] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [commentIndex, setCommentIndex] = useState<string | undefined>("");
 
   const handleLike = () => {
-    // const newLikedState = !isLiked;
-    // setIsLiked(newLikedState);
-    // setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
-    //   if (onLike) onLike(post.id, newLikedState);
-  };
-
-  const handleComment = () => {
-    setShowComments(!showComments);
-    //   if (onComment) onComment(post.id);
+    const newLikedState = !isLiked;
+    setIsLiked(newLikedState);
+    setLikes((prev) => (newLikedState ? prev + 1 : prev - 1));
   };
 
   const handleShare = () => {
@@ -68,7 +59,7 @@ const CommentsDailog = ({
     return num.toString();
   };
 
-  const handleChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPostComments(e.target.value);
     console.log(e.target.value);
   };
@@ -91,6 +82,7 @@ const CommentsDailog = ({
       .then((res) => {
         if (res.data.status) {
           setPostComments("");
+          fetchPostComments();
         }
         console.log("Respose for the comment flow", res);
       })
@@ -109,13 +101,13 @@ const CommentsDailog = ({
     } catch (error) {
       console.error("Error fetching post comments:", error);
     }
-  }, []);
+  }, [post.post_id]);
 
   useEffect(() => {
     fetchPostComments();
   }, [fetchPostComments, postComments]);
 
-  const handleReplyChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleReplyChanges = (e: React.ChangeEvent<HTMLInputElement>) => {
     setreplyComments(e.target.value);
     console.log(e.target.value);
   };
@@ -129,33 +121,9 @@ const CommentsDailog = ({
     const res = await clientApi.post(`/post/comment/reply`, data);
     console.log(res.data);
     setreplyComments("");
+    fetchPostComments();
   };
 
-  const subComment = (id: string) => {
-    // const [reply, setReply] = useState()
-    return (
-      <div key={id} className="text ml-10">
-        <div className="flex gap-3 my-5 flex-1">
-          <Avatar>
-            {/* <AvatarImage src={rep.avatar} alt={rep.author} /> */}
-            {/* <AvatarFallback>{rep.author.charAt(0)}</AvatarFallback> */}
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* <CardTitle className="text-base">{rep.author}</CardTitle> */}
-            </div>
-            <CardDescription className="flex items-center gap-2">
-              {/* {rep.username} • {rep.time} */}
-            </CardDescription>
-            <div className="text flex justify-between">
-              {/* <p className="text">{rep?.content}</p> */}
-              <MdFavorite size={20} />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -167,7 +135,7 @@ const CommentsDailog = ({
               <button className="text" onClick={() => setIsOpen(false)}>
                 <IoIosArrowBack />
               </button>
-              Comments({comments.length})
+              Comments({post.Post.commentcount})
             </DialogTitle>
             <DialogDescription>
               View and add comments on this post.
@@ -236,9 +204,7 @@ const CommentsDailog = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    disabled
                     className="flex items-center gap-2"
-                    onClick={handleComment}
                   >
                     <HiMiniUserGroup className="w-4 h-4" />
                     <span className="hidden sm:inline">
@@ -360,7 +326,7 @@ const CommentsDailog = ({
                             />
                             <button
                               onClick={() => {
-                                handleReplyComment(co.unique_id, co.post_id);
+                                handleReplyComment(co.unique_id, post.post_id);
                               }}
                               className="text absolute right-0 top-0 hover:bg-blue-500 flex justify-center items-center h-full w-12 bg-blue-600 rounded-br-lg rounded-tr-lg"
                             >

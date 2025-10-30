@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Ban, Trash2 } from 'lucide-react';
 
@@ -62,9 +63,11 @@ export default function BlockedUsers() {
               className="bg-white rounded-lg shadow-sm p-4 border border-gray-200 flex items-center justify-between"
             >
               <div className="flex items-center gap-4 flex-1">
-                <img
+                <Image
                   src={user.avatar}
                   alt={user.name}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="flex-1">
@@ -109,4 +112,3 @@ export default function BlockedUsers() {
     </div>
   );
 }
-

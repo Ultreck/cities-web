@@ -26,7 +26,7 @@ const Community = () => {
     community.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleJoinCommunity = (communityId: string | number) => {
+  const handleJoinCommunity = (communityId: number) => {
     setCommunities((prev) =>
       prev.map((comm) =>
         comm.id === communityId ? { ...comm, joined: !comm.joined } : comm

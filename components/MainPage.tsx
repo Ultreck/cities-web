@@ -30,6 +30,7 @@ import {
   DollarSign,
   Menu,
   X,
+  type LucideIcon,
 } from "lucide-react";
 import {
   currentUser,
@@ -71,7 +72,7 @@ function MainPage() {
   // Search data - combine all searchable items
   const searchData = [...posts.map((p) => ({ ...p, type: "post" }))];
 
-  const handleSearch = (item: RePostType) => {
+  const handleSearch = (item: { type: string }) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
     // if (item.type === "community") {
@@ -82,20 +83,20 @@ function MainPage() {
   };
 
   const handleLike = (postId: string, liked: boolean) => {
-    // setPosts((prev) =>
-    //   prev.map((post) =>
-    //     post.id === postId
-    //       ? {
-    //           ...post,
-    //           likedByUser: liked,
-    //           likes: liked ? post.likes + 1 : post.likes - 1,
-    //         }
-    //       : post
-    //   )
-    // );
+    setPosts((prev) =>
+      prev.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              likedByUser: liked,
+              likes: liked ? post.likes + 1 : post.likes - 1,
+            }
+          : post
+      )
+    );
   };
 
-  const handleJoinCommunity = (communityId: string | number) => {
+  const handleJoinCommunity = (communityId: string) => {
     setCommunities((prev) =>
       prev.map((comm) =>
         comm.id === communityId ? { ...comm, joined: !comm.joined } : comm
@@ -103,19 +104,15 @@ function MainPage() {
     );
   };
 
-  const NavItem = ({
-    icon,
-    label,
-    active,
-    onClick,
-    badge,
-  }: {
-    icon: React.ReactNode;
+  interface NavItemProps {
+    icon: LucideIcon;
     label: string;
-    active: string | boolean;
+    active: boolean;
     onClick: () => void;
-    badge: number;
-  }) => (
+    badge?: number;
+  }
+
+  const NavItem = ({ icon: Icon, label, active, onClick, badge }: NavItemProps) => (
     <button
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all relative ${
@@ -127,7 +124,7 @@ function MainPage() {
       {/* <Icon className="w-5 h-5" /> */}
       {icon}
       <span className="font-medium hidden lg:inline">{label}</span>
-      {badge > 0 && (
+      {badge !== undefined && badge > 0 && (
         <Badge
           variant="destructive"
           className="absolute top-1 left-8 lg:left-auto lg:right-2 h-5 min-w-5 flex items-center justify-center p-1"
@@ -221,7 +218,7 @@ function MainPage() {
           `}
           >
             <NavItem
-              icon={<Home />}
+              icon={Home}
               badge={0}
               label="Home"
               active={activeTab === "home"}
@@ -232,7 +229,7 @@ function MainPage() {
             />
             <NavItem
               badge={0}
-              icon={<Users />}
+              icon={Users}
               label="Community"
               active={activeTab === "community"}
               onClick={() => {
@@ -252,7 +249,7 @@ function MainPage() {
             />
             <NavItem
               badge={0}
-              icon={<Gift />}
+              icon={Gift}
               label="Rewards"
               active={activeTab === "rewards"}
               onClick={() => {
@@ -284,7 +281,7 @@ function MainPage() {
             <div className="pt-6 mt-6 border-t space-y-2">
               <NavItem
                 badge={0}
-                icon={<User />}
+                icon={User}
                 label="Profile"
                 active={activeTab === "profile"}
                 onClick={() => {
@@ -294,7 +291,7 @@ function MainPage() {
               />
               <NavItem
                 badge={0}
-                icon={<Settings />}
+                icon={Settings}
                 label="Settings"
                 active={activeTab === "settings"}
                 onClick={() => {

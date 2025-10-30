@@ -7,7 +7,6 @@ import {
   initialCommunities,
   initialEvents,
   initialJobs,
-  initialPosts,
 } from "@/lib/helper";
 import { PostCard } from "../PostCard";
 import {
@@ -33,11 +32,9 @@ import Link from "next/link";
 import clientApi from "@/lib/clientApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
-import { RePostType } from "@/types/type-props";
 import usePostHook from "@/hooks/use-post-hook";
 
 const DashboardCity = () => {
-  // const [posts, setPosts] = useState<RePostType[] | []>([]);
   const [communities, setCommunities] = useState(initialCommunities);
   const dispatch = useDispatch();
   const {posts, handlePostLikes, handleRepost} = usePostHook();
@@ -60,14 +57,14 @@ const DashboardCity = () => {
     //   .catch((err) => {
     //     console.log(err);
     //   });
-  }, []);
+  }, [dispatch]);
 
   const searchData = [
     ...posts.map((p) => ({ ...p, type: "post" })),
     ...communities.map((c) => ({ ...c, type: "community" })),
     ...initialJobs.map((j) => ({ ...j, type: "job" })),
   ];
-  const handleSearch = (item: RePostType) => {
+  const handleSearch = (item: { type: string }) => {
     console.log("Selected:", item);
     // Navigate to the appropriate tab based on item type
     // if (item.type === "community") {
@@ -114,11 +111,11 @@ const DashboardCity = () => {
         <div className="lg:col-span-2 space-y-4">
           {/* Mobile Search */}
           <div className="md:hidden mb-4">
-            <SearchBar
+            {/* <SearchBar
               placeholder="Search..."
               data={searchData}
               onSearch={handleSearch}
-            />
+            /> */}
           </div>
 
           {/* Posts Feed */}
