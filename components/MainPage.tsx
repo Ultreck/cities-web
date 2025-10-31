@@ -697,7 +697,7 @@ function MainPage() {
 
             {/* Profile Tab */}
             {activeTab === "profile" && (
-              <ProfilePage user={currentUser} posts={posts} />
+              <ProfilePage user={currentUser} />
             )}
 
             {/* Settings Tab */}

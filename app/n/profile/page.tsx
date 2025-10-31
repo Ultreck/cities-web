@@ -5,7 +5,8 @@ import { currentUser, initialPosts } from '@/lib/helper'
 const UserProfilePage = () => {
   return (
     <div>
-        <ProfilePage posts={initialPosts} user={currentUser} />
+        <ProfilePage 
+         user={currentUser} />
     </div>
   )
 }
