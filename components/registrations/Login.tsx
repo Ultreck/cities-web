@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Eye, EyeOff, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import img from "../../assets/images/image 1.png";
 import { useForm } from "react-hook-form";
@@ -19,12 +19,12 @@ import {
   FormMessage,
 } from "../ui/form";
 import { PiEyeSlashThin, PiEyeThin } from "react-icons/pi";
-import CountrySelect from "./CountrySelect";
 import clientApi from "@/lib/clientApi";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setToken } from "@/redux/tokenSlice";
+import LoginCountrySelect from "./LoginCountrySelect";
 
 export type UserLoginProps = z.infer<typeof loginSchema>;
 export default function Login() {
@@ -110,7 +110,7 @@ export default function Login() {
                       <FormLabel>Phone number</FormLabel>
                       <FormControl>
                         <div className="text flex gap-2">
-                          <CountrySelect form={form} />
+                          <LoginCountrySelect form={form} />
                           <Input
                             className="h-11"
                             placeholder="070*******25"

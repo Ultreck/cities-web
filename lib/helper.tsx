@@ -621,6 +621,6 @@ interface CountryFlagProps {
 
 export default function CountryFlag({ code, size = "w-6 h-6" }: CountryFlagProps) {
   
-  const Flag = (Flags as Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>>)[code];
+  const Flag = (Flags as unknown as Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>>)[code];
   return Flag ? <Flag className={size} aria-label={code} /> : null;
 }

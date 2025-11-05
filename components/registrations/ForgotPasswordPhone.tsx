@@ -21,7 +21,7 @@ import {
 } from "../ui/form";
 import clientApi from "@/lib/clientApi";
 import { toast } from "react-toastify";
-import CountrySelect from "./CountrySelect";
+import ResetPassordCountrySelect from "./ResetPassordCountrySelect";
 
 export type ResetPasswordProps = z.infer<typeof resetPasswordSchema>;
 export default function ForgotPasswordPhone() {
@@ -114,7 +114,7 @@ export default function ForgotPasswordPhone() {
                       <FormLabel>Phone number</FormLabel>
                       <FormControl>
                         <div className="text flex gap-2">
-                          <CountrySelect form={form} />
+                          <ResetPassordCountrySelect form={form} />
                           <Input
                             className="h-11"
                             placeholder="070*******25"

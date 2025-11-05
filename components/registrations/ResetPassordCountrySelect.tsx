@@ -1,5 +1,7 @@
 "use client";
 
+
+import React from 'react'
 import { useState } from "react";
 import {
   Select,
@@ -12,15 +14,14 @@ import useFormHook from "@/hooks/use-form-hook";
 import { UseFormReturn } from "react-hook-form";
 import CountryFlag from "@/lib/helper";
 import { z } from "zod";
-import { userFormSchema } from "@/lib/formSchemas";
+import { resetPasswordSchema } from '@/lib/formSchemas';
 
-export type ResetPasswordProps = z.infer<typeof userFormSchema>;
 
-export default function CountrySelect({form}: {form: UseFormReturn<ResetPasswordProps>}) {
-  const [selected, setSelected] = useState<string>("");
+export type ResetPasswordProps = z.infer<typeof resetPasswordSchema>;
+
+const ResetPassordCountrySelect = ({form}: {form: UseFormReturn<ResetPasswordProps>}) => {
+    const [selected, setSelected] = useState<string>("");
   const { countries } = useFormHook();
-
-
   return (
     <div className="space-y-2">
       <Select 
@@ -68,5 +69,7 @@ export default function CountrySelect({form}: {form: UseFormReturn<ResetPassword
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }
+
+export default ResetPassordCountrySelect
