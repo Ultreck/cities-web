@@ -17,7 +17,7 @@ const LoginedLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="text fixed bg-white lg:w-1/5">
             <SideNavbar />
           </div>
-          <div className="text w-full lg:w-4/5 lg:px-7 lg:my-10 lg:ml-[20%]">
+          <div className="text w-full lg:w-4/5 px-5 lg:px-7 lg:my-10 lg:ml-[20%]">
             {children}
           </div>
         </div>

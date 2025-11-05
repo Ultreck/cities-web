@@ -96,7 +96,6 @@ const CommentsDailog = ({
       const res = await clientApi.get(
         `/post/comments/?post_id=${post.post_id}`
       );
-      console.log(res.data.comments);
       setCommentsDatas(res.data.comments);
     } catch (error) {
       console.error("Error fetching post comments:", error);
@@ -111,6 +110,7 @@ const CommentsDailog = ({
     setreplyComments(e.target.value);
     console.log(e.target.value);
   };
+
   const handleReplyComment = async (id: string, post_id: string) => {
     console.log(id, replyComments, post_id);
     const data = {
@@ -159,11 +159,6 @@ const CommentsDailog = ({
                       <CardTitle className="text-base">
                         {post.User.first_name}
                       </CardTitle>
-                      {/* {post.sponsored && (
-                        <Badge variant="secondary" className="text-xs">
-                          Sponsored
-                        </Badge>
-                      )} */}
                     </div>
                     <CardDescription className="flex items-center gap-2">
                       {post?.User?.first_name + " " + post?.User?.last_name} •{" "}
@@ -173,7 +168,6 @@ const CommentsDailog = ({
                 </div>
               </div>
               <div>
-                {/* <h3 className="font-semibold mb-2">{post.Post.title}</h3> */}
                 <p className="text-sm text-muted-foreground">
                   {post.Post.content}
                 </p>
@@ -212,9 +206,6 @@ const CommentsDailog = ({
                     </span>
                   </Button>
                 </p>
-
-                {/* <CommentsDailog post={post}>
-                </CommentsDailog> */}
 
                 <Button
                   variant="ghost"
